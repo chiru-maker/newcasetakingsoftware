@@ -335,10 +335,42 @@ st.markdown("""
     }
     
     [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.88) !important;
-        backdrop-filter: blur(14px) !important;
-        -webkit-backdrop-filter: blur(14px) !important;
-        border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+        background-color: #1e2330 !important;
+        border-right: 1px solid #2d3748 !important;
+    }
+    
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] div[data-testid="stMarkdownContainer"] p {
+        color: #f8fafc !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio label {
+        color: #e2e8f0 !important;
+        font-weight: 500 !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] label span {
+        color: #f8fafc !important;
+    }
+
+    [data-testid="stSidebar"] hr {
+        border-color: #334155 !important;
+    }
+    
+    [data-testid="stSidebar"] .stCaption, 
+    [data-testid="stSidebar"] small {
+        color: #94a3b8 !important;
+    }
+    
+    [data-testid="stSidebar"] img {
+        border-radius: 14px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
     }
     
     .main-title {
@@ -410,230 +442,11 @@ if "triage_queue" not in st.session_state:
         {"token": "A-104", "name": "Ramesh Patel", "age": 48, "gender": "M", "complaint": "Severe epigastric burning with dizziness", "priority": "Elevated", "dept": "Gastroenterology", "status": "Case Intake Done"}
     ]
 
-BEAMS_SIDEBAR_HTML = """
-<div style="width:100%; height:190px; position:relative; border-radius:14px; overflow:hidden; box-shadow:0 8px 24px -4px rgba(2, 132, 199, 0.35); border:1px solid rgba(56, 189, 248, 0.4); margin-bottom:12px;">
-  <canvas id="beams-sidebar-canvas" style="width:100%; height:100%; display:block;"></canvas>
-  <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:1rem; background:linear-gradient(to top, rgba(3, 7, 18, 0.92) 0%, rgba(3, 7, 18, 0.3) 55%, transparent 100%); pointer-events:none;">
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
-      <span style="font-size:1.3rem;">🏥</span>
-      <span style="font-size:1.1rem; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">Pranabyte AI</span>
-    </div>
-    <span style="font-size:0.75rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Clinical Copilot & Kiosk</span>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-(function() {
-  function initBeams() {
-    const canvas = document.getElementById('beams-sidebar-canvas');
-    if (!canvas || !window.THREE) {
-      setTimeout(initBeams, 100);
-      return;
-    }
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#030712');
-
-    const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / (canvas.clientHeight || 1), 0.1, 100);
-    camera.position.set(0, 0, 20);
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
-    scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight(0x38bdf8, 2.5);
-    dirLight.position.set(0, 5, 10);
-    scene.add(dirLight);
-
-    const noiseGLSL = `
-      float random (in vec2 st) {
-          return fract(sin(dot(st.xy, vec2(12.9898,78.233)))* 43758.5453123);
-      }
-      vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
-      vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
-      vec3 fade(vec3 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
-      float cnoise(vec3 P){
-        vec3 Pi0 = floor(P);
-        vec3 Pi1 = Pi0 + vec3(1.0);
-        Pi0 = mod(Pi0, 289.0);
-        Pi1 = mod(Pi1, 289.0);
-        vec3 Pf0 = fract(P);
-        vec3 Pf1 = Pf0 - vec3(1.0);
-        vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-        vec4 iy = vec4(Pi0.yy, Pi1.yy);
-        vec4 iz0 = Pi0.zzzz;
-        vec4 iz1 = Pi1.zzzz;
-        vec4 ixy = permute(permute(ix) + iy);
-        vec4 ixy0 = permute(ixy + iz0);
-        vec4 ixy1 = permute(ixy + iz1);
-        vec4 gx0 = ixy0 / 7.0;
-        vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
-        gx0 = fract(gx0);
-        vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-        vec4 sz0 = step(gz0, vec4(0.0));
-        gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-        gy0 -= sz0 * (step(0.0, gy0) - 0.5);
-        vec4 gx1 = ixy1 / 7.0;
-        vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
-        gx1 = fract(gx1);
-        vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-        vec4 sz1 = step(gz1, vec4(0.0));
-        gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-        gy1 -= sz1 * (step(0.0, gy1) - 0.5);
-        vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-        vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-        vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-        vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-        vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-        vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
-        vec4 norm0 = taylorInvSqrt(vec4(dot(g000,g000),dot(g010,g010),dot(g100,g100),dot(g110,g110)));
-        g000 *= norm0.x; g010 *= norm0.y; g100 *= norm0.z; g110 *= norm0.w;
-        vec4 norm1 = taylorInvSqrt(vec4(dot(g001,g001),dot(g011,g011),dot(g101,g101),dot(g111,g111)));
-        g001 *= norm1.x; g011 *= norm1.y; g101 *= norm1.z; g111 *= norm1.w;
-        float n000 = dot(g000, Pf0);
-        float n100 = dot(g100, vec3(Pf1.x,Pf0.yz));
-        float n010 = dot(g010, vec3(Pf0.x,Pf1.y,Pf0.z));
-        float n110 = dot(g110, vec3(Pf1.xy,Pf0.z));
-        float n001 = dot(g001, vec3(Pf0.xy,Pf1.z));
-        float n101 = dot(g101, vec3(Pf1.x,Pf0.y,Pf1.z));
-        float n011 = dot(g011, vec3(Pf0.x,Pf1.yz));
-        float n111 = dot(g111, Pf1);
-        vec3 fade_xyz = fade(Pf0);
-        vec4 n_z = mix(vec4(n000,n100,n010,n110),vec4(n001,n101,n011,n111),fade_xyz.z);
-        vec2 n_yz = mix(n_z.xy,n_z.zw,fade_xyz.y);
-        float n_xyz = mix(n_yz.x,n_yz.y,fade_xyz.x);
-        return 2.2 * n_xyz;
-      }
-    `;
-
-    function createStackedPlanes(n, width, height, spacing, heightSegments) {
-      const geometry = new THREE.BufferGeometry();
-      const numVertices = n * (heightSegments + 1) * 2;
-      const numFaces = n * heightSegments * 2;
-      const positions = new Float32Array(numVertices * 3);
-      const indices = new Uint32Array(numFaces * 3);
-      const uvs = new Float32Array(numVertices * 2);
-
-      let vertexOffset = 0;
-      let indexOffset = 0;
-      let uvOffset = 0;
-      const totalWidth = n * width + (n - 1) * spacing;
-      const xOffsetBase = -totalWidth / 2;
-
-      for (let i = 0; i < n; i++) {
-        const xOffset = xOffsetBase + i * (width + spacing);
-        const uvXOffset = Math.random() * 300;
-        const uvYOffset = Math.random() * 300;
-
-        for (let j = 0; j <= heightSegments; j++) {
-          const y = height * (j / heightSegments - 0.5);
-          const v0 = [xOffset, y, 0];
-          const v1 = [xOffset + width, y, 0];
-          positions.set([...v0, ...v1], vertexOffset * 3);
-
-          const uvY = j / heightSegments;
-          uvs.set([uvXOffset, uvY + uvYOffset, uvXOffset + 1, uvY + uvYOffset], uvOffset);
-
-          if (j < heightSegments) {
-            const a = vertexOffset, b = vertexOffset + 1, c = vertexOffset + 2, d = vertexOffset + 3;
-            indices.set([a, b, c, c, b, d], indexOffset);
-            indexOffset += 6;
-          }
-          vertexOffset += 2;
-          uvOffset += 4;
-        }
-      }
-
-      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-      geometry.setIndex(new THREE.BufferAttribute(indices, 1));
-      geometry.computeVertexNormals();
-      return geometry;
-    }
-
-    const customMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0 },
-        uSpeed: { value: 2.0 },
-        uNoiseIntensity: { value: 1.75 },
-        uScale: { value: 0.25 },
-        diffuse: { value: new THREE.Color('#38bdf8') }
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal;
-        varying vec3 vPos;
-        uniform float time;
-        uniform float uSpeed;
-        uniform float uScale;
-        ${noiseGLSL}
-        float getPos(vec3 pos) {
-          vec3 noisePos = vec3(pos.x * 0., pos.y - uv.y, pos.z + time * uSpeed * 3.) * uScale;
-          return cnoise(noisePos);
-        }
-        void main() {
-          vUv = uv;
-          vNormal = normal;
-          vec3 pos = position;
-          pos.z += getPos(pos);
-          vPos = pos;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec2 vUv;
-        varying vec3 vNormal;
-        varying vec3 vPos;
-        uniform float time;
-        uniform vec3 diffuse;
-        uniform float uNoiseIntensity;
-        void main() {
-          float glow = clamp(dot(vNormal, vec3(0.0, 0.4, 1.0)), 0.0, 1.0);
-          vec3 col = mix(diffuse * 0.35, vec3(0.65, 0.92, 1.0), glow);
-          col += vec3(0.08, 0.25, 0.7) * (1.0 - vUv.y);
-          gl_FragColor = vec4(col, 0.95);
-        }
-      `,
-      transparent: true,
-      side: THREE.DoubleSide
-    });
-
-    const geom = createStackedPlanes(12, 1.8, 14, 0.0, 80);
-    const mesh = new THREE.Mesh(geom, customMaterial);
-    scene.add(mesh);
-
-    function resize() {
-      const width = canvas.parentElement.clientWidth;
-      const height = canvas.parentElement.clientHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    let clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      customMaterial.uniforms.time.value += delta * 0.5;
-      mesh.rotation.z = Math.sin(customMaterial.uniforms.time.value * 0.2) * 0.05;
-      renderer.render(scene, camera);
-    }
-    animate();
-  }
-  initBeams();
-})();
-</script>
-"""
-
 # Sidebar Navigation
 with st.sidebar:
-    components.html(BEAMS_SIDEBAR_HTML, height=205)
+    st.image("https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&q=80", use_container_width=True)
+    st.markdown("### 🏥 Pranabyte AI")
+    st.markdown("#### **Hospital Kiosk & Clinical Copilot**")
     st.divider()
     
     app_mode = st.radio(
