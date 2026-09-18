@@ -408,16 +408,16 @@ def render_voice_mic_listener(lang_code: str = "hi-IN", key_id: str = "mic_btn")
     components.html(html_code, height=65)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# GradientWaves Interactive WebGL2 Shader Background (React Bits Port)
+# Grainient Interactive WebGL2 Shader Background (React Bits Port)
 # ─────────────────────────────────────────────────────────────────────────────
-GRADIENT_WAVES_HTML = """
+GRAINIENT_HTML = """
 <script>
 (function() {
   const targetDoc = window.parent.document || document;
-  if (targetDoc.getElementById('gradient-waves-wrapper-global')) return;
+  if (targetDoc.getElementById('grainient-wrapper-global')) return;
 
   const wrapper = targetDoc.createElement('div');
-  wrapper.id = 'gradient-waves-wrapper-global';
+  wrapper.id = 'grainient-wrapper-global';
   wrapper.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden; opacity:0.35;';
 
   const canvas = targetDoc.createElement('canvas');
@@ -445,104 +445,91 @@ GRADIENT_WAVES_HTML = """
   precision highp float;
   uniform vec2 iResolution;
   uniform float iTime;
-  uniform float uSpeed;
-  uniform float uAmplitude;
-  uniform float uWaveScale;
-  uniform float uWaveRatio;
-  uniform float uSwell;
-  uniform float uTurbulence;
-  uniform float uTilt;
+  uniform float uTimeSpeed;
+  uniform float uColorBalance;
+  uniform float uWarpStrength;
+  uniform float uWarpFrequency;
+  uniform float uWarpSpeed;
+  uniform float uWarpAmplitude;
+  uniform float uBlendAngle;
+  uniform float uBlendSoftness;
+  uniform float uRotationAmount;
+  uniform float uNoiseScale;
+  uniform float uGrainAmount;
+  uniform float uGrainScale;
+  uniform float uGrainAnimated;
+  uniform float uContrast;
+  uniform float uGamma;
+  uniform float uSaturation;
+  uniform vec2 uCenterOffset;
   uniform float uZoom;
-  uniform float uHeight;
-  uniform float uFogDepth;
-  uniform float uSteps;
-  uniform float uBrightness;
-  uniform float uOpacity;
-  uniform float uGrain;
-  uniform float uGrainIntensity;
-  uniform vec2 uMouse;
-  uniform float uParallax;
-  uniform bool uEnableMouse;
-  uniform vec3 uHorizonColor;
-  uniform vec3 uWaveColor;
-  uniform vec3 uCrestColor;
+  uniform vec3 uColor1;
+  uniform vec3 uColor2;
+  uniform vec3 uColor3;
+  uniform float uLightMode;
   out vec4 fragColor;
+  #define S(a,b,t) smoothstep(a,b,t)
+  mat2 Rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
+  vec2 hash(vec2 p){p=vec2(dot(p,vec2(2127.1,81.17)),dot(p,vec2(1269.5,283.37)));return fract(sin(p)*43758.5453);} 
+  float noise(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.0-2.0*f);float n=mix(mix(dot(-1.0+2.0*hash(i+vec2(0.0,0.0)),f-vec2(0.0,0.0)),dot(-1.0+2.0*hash(i+vec2(1.0,0.0)),f-vec2(1.0,0.0)),u.x),mix(dot(-1.0+2.0*hash(i+vec2(0.0,1.0)),f-vec2(0.0,1.0)),dot(-1.0+2.0*hash(i+vec2(1.0,1.0)),f-vec2(1.0,1.0)),u.x),u.y);return 0.5+0.5*n;}
+  void mainImage(out vec4 o, vec2 C){
+    float t=iTime*uTimeSpeed;
+    vec2 uv=C/iResolution.xy;
+    float ratio=iResolution.x/iResolution.y;
+    vec2 tuv=uv-0.5+uCenterOffset;
+    tuv/=max(uZoom,0.001);
 
-  const float MAX_DIST = 20000.0;
+    float degree=noise(vec2(t*0.1,tuv.x*tuv.y)*uNoiseScale);
+    tuv.y*=1.0/ratio;
+    tuv*=Rot(radians((degree-0.5)*uRotationAmount+180.0));
+    tuv.y*=ratio;
 
-  float hash21(vec2 p) {
-    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
-  }
+    float frequency=uWarpFrequency;
+    float ws=max(uWarpStrength,0.001);
+    float amplitude=uWarpAmplitude/ws;
+    float warpTime=t*uWarpSpeed;
+    tuv.x+=sin(tuv.y*frequency+warpTime)/amplitude;
+    tuv.y+=sin(tuv.x*(frequency*1.5)+warpTime)/(amplitude*0.5);
 
-  float plasma(vec3 r, vec2 freq, vec4 tc) {
-    float mx = r.x + tc.x;
-    mx += uSwell * sin((r.y + mx) / 20.0 + tc.y);
-    float my = r.y - tc.z;
-    my += uTurbulence * cos(r.x / 23.0 + tc.w);
-    return r.z - (sin(mx * freq.x) * uAmplitude + sin(my * freq.y) * uAmplitude + uHeight);
-  }
+    vec3 colLav=uColor1;
+    vec3 colOrg=uColor2;
+    vec3 colDark=uColor3;
+    float b=uColorBalance;
+    float s=max(uBlendSoftness,0.0);
+    mat2 blendRot=Rot(radians(uBlendAngle));
+    float blendX=(tuv*blendRot).x;
+    float edge0=-0.3-b-s;
+    float edge1=0.2-b+s;
+    float v0=0.5-b+s;
+    float v1=-0.3-b-s;
+    vec3 layer1=mix(colDark,colOrg,S(edge0,edge1,blendX));
+    vec3 layer2=mix(colOrg,colLav,S(edge0,edge1,blendX));
+    vec3 col=mix(layer1,layer2,S(v0,v1,tuv.y));
 
-  float raymarch(vec3 pos, vec3 dir, vec2 freq, vec4 tc) {
-    float dist = 0.0;
-    for (int i = 0; i < 128; i++) {
-      if (float(i) >= uSteps) break;
-      float dscene = plasma(pos + dist * dir, freq, tc);
-      if (abs(dscene) < 0.1) break;
-      dist += 0.9 * dscene;
-      if (!(abs(dist) < MAX_DIST)) return MAX_DIST;
-    }
-    return dist;
-  }
+    vec2 grainUv=uv*max(uGrainScale,0.001);
+    if(uGrainAnimated>0.5){grainUv+=vec2(iTime*0.05);} 
+    float grain=fract(sin(dot(grainUv,vec2(12.9898,78.233)))*43758.5453);
+    col+=(grain-0.5)*uGrainAmount;
 
-  void main() {
-    float T = iTime * uSpeed;
-    vec2 freq = vec2(uWaveScale / 7.0, (uWaveScale * uWaveRatio) / 3.0);
-    vec4 tc = vec4(T / 0.130, T / 0.810, T / 0.200, T / 0.710);
-    float c, s;
-    float vfov = (3.14159 / 2.3) / max(uZoom, 0.05);
-    vec3 cam = vec3(0.0, 0.0, 30.0);
-    vec2 uv = (gl_FragCoord.xy / iResolution.xy) - 0.5;
-    uv.x *= iResolution.x / iResolution.y;
-    uv.y *= -1.0;
-
-    vec3 dir = vec3(0.0, 0.0, -1.0);
-    float ulen = length(uv);
-    float xrot = vfov * ulen;
-    c = cos(xrot); s = sin(xrot);
-    dir = mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c) * dir;
-    vec2 nuv = ulen > 1e-5 ? uv / ulen : vec2(1.0, 0.0);
-    c = nuv.x; s = nuv.y;
-    dir = mat3(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0) * dir;
-    c = cos(uTilt); s = sin(uTilt);
-    dir = mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c) * dir;
-
-    if (uEnableMouse) {
-      float yaw = (uMouse.x - 0.5) * uParallax * 0.4;
-      float pitch = (uMouse.y - 0.5) * uParallax * 0.4;
-      c = cos(yaw); s = sin(yaw);
-      dir = mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c) * dir;
-      c = cos(pitch); s = sin(pitch);
-      dir = mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c) * dir;
+    col=(col-0.5)*uContrast+0.5;
+    float luma=dot(col,vec3(0.2126,0.7152,0.0722));
+    col=mix(vec3(luma),col,uSaturation);
+    col=pow(max(col,0.0),vec3(1.0/max(uGamma,0.001)));
+    col=clamp(col,0.0,1.0);
+    if(uLightMode>0.5){
+      float energy=max(max(col.r,col.g),col.b);
+      vec3 hue=col/max(energy,0.001);
+      float chroma=length(col-vec3(dot(col,vec3(0.333333))));
+      float coverage=clamp(0.12+chroma*1.15+energy*0.18,0.0,0.88);
+      col=mix(vec3(1.0),clamp(hue*0.58+col*0.18,0.0,1.0),coverage);
     }
 
-    float dist = raymarch(cam, dir, freq, tc);
-    vec3 pos = cam + dist * dir;
-
-    float t = clamp(uFogDepth / max(dist, 0.001), 0.0, 1.0);
-    vec3 body = mix(uWaveColor, uCrestColor, clamp(pos.z * 0.08 + 0.5, 0.0, 1.0));
-    vec3 col = mix(uHorizonColor, body, t);
-    col *= uBrightness;
-    col = clamp(col, 0.0, 1.0);
-
-    float alpha = clamp(t, 0.0, 1.0) * uOpacity;
-    if (uGrain > 0.5) {
-      float g = hash21(gl_FragCoord.xy + mod(iTime, 64.0) * 11.0);
-      alpha += (g - 0.5) * uGrainIntensity;
-    }
-    alpha = clamp(alpha, 0.0, 1.0);
-    fragColor = vec4(col * alpha, alpha);
+    o=vec4(col,1.0);
+  }
+  void main(){
+    vec4 o=vec4(0.0);
+    mainImage(o,gl_FragCoord.xy);
+    fragColor=o;
   }
   `;
 
@@ -573,60 +560,56 @@ GRADIENT_WAVES_HTML = """
   const uniforms = {
     iResolution: gl.getUniformLocation(program, 'iResolution'),
     iTime: gl.getUniformLocation(program, 'iTime'),
-    uSpeed: gl.getUniformLocation(program, 'uSpeed'),
-    uAmplitude: gl.getUniformLocation(program, 'uAmplitude'),
-    uWaveScale: gl.getUniformLocation(program, 'uWaveScale'),
-    uWaveRatio: gl.getUniformLocation(program, 'uWaveRatio'),
-    uSwell: gl.getUniformLocation(program, 'uSwell'),
-    uTurbulence: gl.getUniformLocation(program, 'uTurbulence'),
-    uTilt: gl.getUniformLocation(program, 'uTilt'),
+    uTimeSpeed: gl.getUniformLocation(program, 'uTimeSpeed'),
+    uColorBalance: gl.getUniformLocation(program, 'uColorBalance'),
+    uWarpStrength: gl.getUniformLocation(program, 'uWarpStrength'),
+    uWarpFrequency: gl.getUniformLocation(program, 'uWarpFrequency'),
+    uWarpSpeed: gl.getUniformLocation(program, 'uWarpSpeed'),
+    uWarpAmplitude: gl.getUniformLocation(program, 'uWarpAmplitude'),
+    uBlendAngle: gl.getUniformLocation(program, 'uBlendAngle'),
+    uBlendSoftness: gl.getUniformLocation(program, 'uBlendSoftness'),
+    uRotationAmount: gl.getUniformLocation(program, 'uRotationAmount'),
+    uNoiseScale: gl.getUniformLocation(program, 'uNoiseScale'),
+    uGrainAmount: gl.getUniformLocation(program, 'uGrainAmount'),
+    uGrainScale: gl.getUniformLocation(program, 'uGrainScale'),
+    uGrainAnimated: gl.getUniformLocation(program, 'uGrainAnimated'),
+    uContrast: gl.getUniformLocation(program, 'uContrast'),
+    uGamma: gl.getUniformLocation(program, 'uGamma'),
+    uSaturation: gl.getUniformLocation(program, 'uSaturation'),
+    uCenterOffset: gl.getUniformLocation(program, 'uCenterOffset'),
     uZoom: gl.getUniformLocation(program, 'uZoom'),
-    uHeight: gl.getUniformLocation(program, 'uHeight'),
-    uFogDepth: gl.getUniformLocation(program, 'uFogDepth'),
-    uSteps: gl.getUniformLocation(program, 'uSteps'),
-    uBrightness: gl.getUniformLocation(program, 'uBrightness'),
-    uOpacity: gl.getUniformLocation(program, 'uOpacity'),
-    uGrain: gl.getUniformLocation(program, 'uGrain'),
-    uGrainIntensity: gl.getUniformLocation(program, 'uGrainIntensity'),
-    uMouse: gl.getUniformLocation(program, 'uMouse'),
-    uParallax: gl.getUniformLocation(program, 'uParallax'),
-    uEnableMouse: gl.getUniformLocation(program, 'uEnableMouse'),
-    uHorizonColor: gl.getUniformLocation(program, 'uHorizonColor'),
-    uWaveColor: gl.getUniformLocation(program, 'uWaveColor'),
-    uCrestColor: gl.getUniformLocation(program, 'uCrestColor'),
+    uColor1: gl.getUniformLocation(program, 'uColor1'),
+    uColor2: gl.getUniformLocation(program, 'uColor2'),
+    uColor3: gl.getUniformLocation(program, 'uColor3'),
+    uLightMode: gl.getUniformLocation(program, 'uLightMode'),
   };
 
-  const hc = hexToRgb('#5227FF');
-  const wc = hexToRgb('#FF9FFC');
-  const cc = hexToRgb('#FFFFFF');
+  const c1 = hexToRgb('#FF9FFC');
+  const c2 = hexToRgb('#5227FF');
+  const c3 = hexToRgb('#B497CF');
 
-  gl.uniform1f(uniforms.uSpeed, 0.4);
-  gl.uniform1f(uniforms.uAmplitude, 2.5);
-  gl.uniform1f(uniforms.uWaveScale, 0.6);
-  gl.uniform1f(uniforms.uWaveRatio, 0.9);
-  gl.uniform1f(uniforms.uSwell, 35.0);
-  gl.uniform1f(uniforms.uTurbulence, 20.0);
-  gl.uniform1f(uniforms.uTilt, 1.11);
-  gl.uniform1f(uniforms.uZoom, 1.0);
-  gl.uniform1f(uniforms.uHeight, 5.5);
-  gl.uniform1f(uniforms.uFogDepth, 15.0);
-  gl.uniform1f(uniforms.uSteps, 70.0);
-  gl.uniform1f(uniforms.uBrightness, 1.0);
-  gl.uniform1f(uniforms.uOpacity, 0.65);
-  gl.uniform1f(uniforms.uGrain, 1.0);
-  gl.uniform1f(uniforms.uGrainIntensity, 0.05);
-  gl.uniform1f(uniforms.uParallax, 0.5);
-  gl.uniform1i(uniforms.uEnableMouse, 1);
-  gl.uniform3fv(uniforms.uHorizonColor, hc);
-  gl.uniform3fv(uniforms.uWaveColor, wc);
-  gl.uniform3fv(uniforms.uCrestColor, cc);
-
-  let mouseX = 0.5, mouseY = 0.5;
-  let curMouseX = 0.5, curMouseY = 0.5;
-  window.addEventListener('mousemove', e => {
-    mouseX = e.clientX / window.innerWidth;
-    mouseY = 1.0 - (e.clientY / window.innerHeight);
-  });
+  gl.uniform1f(uniforms.uTimeSpeed, 0.25);
+  gl.uniform1f(uniforms.uColorBalance, 0.0);
+  gl.uniform1f(uniforms.uWarpStrength, 1.0);
+  gl.uniform1f(uniforms.uWarpFrequency, 5.0);
+  gl.uniform1f(uniforms.uWarpSpeed, 2.0);
+  gl.uniform1f(uniforms.uWarpAmplitude, 50.0);
+  gl.uniform1f(uniforms.uBlendAngle, 0.0);
+  gl.uniform1f(uniforms.uBlendSoftness, 0.05);
+  gl.uniform1f(uniforms.uRotationAmount, 500.0);
+  gl.uniform1f(uniforms.uNoiseScale, 2.0);
+  gl.uniform1f(uniforms.uGrainAmount, 0.1);
+  gl.uniform1f(uniforms.uGrainScale, 2.0);
+  gl.uniform1f(uniforms.uGrainAnimated, 0.0);
+  gl.uniform1f(uniforms.uContrast, 1.5);
+  gl.uniform1f(uniforms.uGamma, 1.0);
+  gl.uniform1f(uniforms.uSaturation, 1.0);
+  gl.uniform2f(uniforms.uCenterOffset, 0.0, 0.0);
+  gl.uniform1f(uniforms.uZoom, 0.9);
+  gl.uniform3fv(uniforms.uColor1, c1);
+  gl.uniform3fv(uniforms.uColor2, c2);
+  gl.uniform3fv(uniforms.uColor3, c3);
+  gl.uniform1f(uniforms.uLightMode, 0.0);
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -639,11 +622,8 @@ GRADIENT_WAVES_HTML = """
   const startTime = performance.now();
   function render() {
     const elapsed = (performance.now() - startTime) / 1000;
-    curMouseX += 0.05 * (mouseX - curMouseX);
-    curMouseY += 0.05 * (mouseY - curMouseY);
     gl.uniform2f(uniforms.iResolution, canvas.width, canvas.height);
     gl.uniform1f(uniforms.iTime, elapsed);
-    gl.uniform2f(uniforms.uMouse, curMouseX, curMouseY);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);
   }
@@ -652,8 +632,8 @@ GRADIENT_WAVES_HTML = """
 </script>
 """
 
-# Render WebGL GradientWaves Background via components
-components.html(GRADIENT_WAVES_HTML, height=0)
+# Render WebGL Grainient Background via components
+components.html(GRAINIENT_HTML, height=0)
 
 # Custom Accessible Medical Aesthetic CSS
 st.markdown("""
@@ -1568,7 +1548,7 @@ elif app_mode == "⚙️ Settings & Configuration":
         st.markdown("### 🔊 Voice & Visual Preferences")
         with st.container(border=True):
             v_autospeak = st.toggle("Auto-play voice responses during intake", value=st.session_state.settings_config.get("auto_speak", True))
-            v_shader = st.toggle("Enable GradientWaves Shader Background", value=st.session_state.settings_config.get("shader_background", True))
+            v_shader = st.toggle("Enable Grainient Shader Background", value=st.session_state.settings_config.get("shader_background", True))
             v_speed = st.slider("Voice Speed (Rate)", 0.7, 1.5, float(st.session_state.settings_config.get("speech_rate", 1.0)), 0.1)
 
     st.markdown("### ⚡ Quick Actions & Reset")
