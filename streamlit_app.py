@@ -1,5 +1,5 @@
 """
-SwasthyaSync — AI-Powered Clinical Case-Taking & Triage Platform
+Pranabyte AI — AI-Powered Clinical Case-Taking & Triage Platform
 Streamlit Cloud & Local Deployment Entrypoint
 """
 
@@ -32,7 +32,7 @@ import streamlit.components.v1 as components
 
 # Page configuration
 st.set_page_config(
-    page_title="SwasthyaSync | Clinical Case-Taking & Triage",
+    page_title="Pranabyte AI | Clinical Case-Taking & Triage",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -416,7 +416,7 @@ BEAMS_SIDEBAR_HTML = """
   <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:1rem; background:linear-gradient(to top, rgba(3, 7, 18, 0.92) 0%, rgba(3, 7, 18, 0.3) 55%, transparent 100%); pointer-events:none;">
     <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
       <span style="font-size:1.3rem;">🏥</span>
-      <span style="font-size:1.1rem; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">SwasthyaSync AI</span>
+      <span style="font-size:1.1rem; font-weight:800; color:#ffffff; letter-spacing:-0.02em;">Pranabyte AI</span>
     </div>
     <span style="font-size:0.75rem; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.06em;">Clinical Copilot & Kiosk</span>
   </div>
@@ -690,7 +690,7 @@ if app_mode == "🏠 Patient Intake Kiosk":
                 }
                 st.session_state.session_active = True
                 st.session_state.messages = [
-                    {"role": "assistant", "content": f"Namaste {name}! I am SwasthyaSync AI Assistant. Please describe your main health complaints or what brought you to the hospital today."}
+                    {"role": "assistant", "content": f"Namaste {name}! I am Pranabyte AI Assistant. Please describe your main health complaints or what brought you to the hospital today."}
                 ]
                 st.success("Session initiated! Token: " + st.session_state.patient_data["token_number"])
 
@@ -754,8 +754,8 @@ if app_mode == "🏠 Patient Intake Kiosk":
         with qc2:
             st.download_button(
                 "📥 Download Case PDF",
-                data=f"SwasthyaSync Case Summary\nPatient: {st.session_state.patient_data['full_name']}\nToken: {st.session_state.patient_data['token_number']}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-                file_name=f"case_summary_{st.session_state.patient_data['token_number']}.txt",
+                data=f"Pranabyte AI Case Summary\nPatient: {st.session_state.patient_data['full_name']}\nToken: {st.session_state.patient_data['token_number']}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                file_name=f"pranabyte_case_summary_{st.session_state.patient_data['token_number']}.txt",
                 mime="text/plain",
                 use_container_width=True
             )

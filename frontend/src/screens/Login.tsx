@@ -569,7 +569,7 @@ export function Login({ onSessionStarted }: Props) {
             className="w-full text-center mb-6 flex flex-col items-center"
           >
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-0.5 tracking-tight">
-              SwasthyaSync
+              Pranabyte AI
             </h2>
             <p className="text-slate-400 font-medium text-xs sm:text-sm mb-4">AI-Powered Clinical Intake System</p>
 
