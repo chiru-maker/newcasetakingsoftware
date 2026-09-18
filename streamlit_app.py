@@ -403,169 +403,142 @@ def render_voice_mic_listener(lang_code: str = "hi-IN", key_id: str = "mic_btn")
     components.html(html_code, height=65)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Lightfall Interactive WebGL Shader Background (React Bits Port)
+# GradientWaves Interactive WebGL2 Shader Background (React Bits Port)
 # ─────────────────────────────────────────────────────────────────────────────
-LIGHTFALL_HTML = """
+GRADIENT_WAVES_HTML = """
 <script>
 (function() {
   const targetDoc = window.parent.document || document;
-  if (targetDoc.getElementById('lightfall-wrapper-global')) return;
+  if (targetDoc.getElementById('gradient-waves-wrapper-global')) return;
 
   const wrapper = targetDoc.createElement('div');
-  wrapper.id = 'lightfall-wrapper-global';
-  wrapper.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden; opacity:0.32;';
+  wrapper.id = 'gradient-waves-wrapper-global';
+  wrapper.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden; opacity:0.38;';
 
   const canvas = targetDoc.createElement('canvas');
   canvas.style.cssText = 'width:100%; height:100%; display:block;';
   wrapper.appendChild(canvas);
   targetDoc.body.prepend(wrapper);
 
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
   if (!gl) return;
 
-  const hexToRGB = hex => {
-    const c = hex.replace('#', '').padEnd(6, '0');
-    return [
-      parseInt(c.slice(0, 2), 16) / 255,
-      parseInt(c.slice(2, 4), 16) / 255,
-      parseInt(c.slice(4, 6), 16) / 255
-    ];
+  const hexToRgb = hex => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return [1, 1, 1];
+    return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
   };
 
-  const baseColors = ['#93C5FD', '#3B82F6', '#60A5FA', '#38BDF8'];
-  const MAX_COLORS = 8;
-  const arr = [];
-  for (let i = 0; i < MAX_COLORS; i++) {
-    arr.push(hexToRGB(baseColors[Math.min(i, baseColors.length - 1)]));
+  const vertexSrc = `#version 300 es
+  in vec2 position;
+  void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
   }
-  const avg = [0, 0, 0];
-  for (let i = 0; i < baseColors.length; i++) {
-    avg[0] += arr[i][0]; avg[1] += arr[i][1]; avg[2] += arr[i][2];
-  }
-  avg[0] /= baseColors.length; avg[1] /= baseColors.length; avg[2] /= baseColors.length;
-
-  const vsSource = `
-    attribute vec2 position;
-    attribute vec2 uv;
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = vec4(position, 0.0, 1.0);
-    }
   `;
 
-  const fsSource = `
-    precision highp float;
-    uniform vec3  iResolution;
-    uniform vec2  iMouse;
-    uniform float iTime;
-    uniform vec3  uColor0, uColor1, uColor2, uColor3, uColor4, uColor5, uColor6, uColor7;
-    uniform int   uColorCount;
-    uniform vec3  uBgColor;
-    uniform vec3  uMouseColor;
-    uniform float uSpeed;
-    uniform int   uStreakCount;
-    uniform float uStreakWidth;
-    uniform float uStreakLength;
-    uniform float uGlow;
-    uniform float uDensity;
-    uniform float uTwinkle;
-    uniform float uZoom;
-    uniform float uBgGlow;
-    uniform float uOpacity;
-    uniform float uMouseEnabled;
-    uniform float uMouseStrength;
-    uniform float uMouseRadius;
-    uniform float uLightMode;
-    varying vec2 vUv;
+  const fragmentSrc = `#version 300 es
+  precision highp float;
+  uniform vec2 iResolution;
+  uniform float iTime;
+  uniform float uSpeed;
+  uniform float uAmplitude;
+  uniform float uWaveScale;
+  uniform float uWaveRatio;
+  uniform float uSwell;
+  uniform float uTurbulence;
+  uniform float uTilt;
+  uniform float uZoom;
+  uniform float uHeight;
+  uniform float uFogDepth;
+  uniform float uSteps;
+  uniform float uBrightness;
+  uniform float uOpacity;
+  uniform float uGrain;
+  uniform float uGrainIntensity;
+  uniform vec2 uMouse;
+  uniform float uParallax;
+  uniform bool uEnableMouse;
+  uniform vec3 uHorizonColor;
+  uniform vec3 uWaveColor;
+  uniform vec3 uCrestColor;
+  out vec4 fragColor;
 
-    vec3 palette(float h) {
-      int count = uColorCount;
-      if (count < 1) count = 1;
-      int idx = int(floor(clamp(h, 0.0, 0.999999) * float(count)));
-      if (idx <= 0) return uColor0;
-      if (idx == 1) return uColor1;
-      if (idx == 2) return uColor2;
-      if (idx == 3) return uColor3;
-      if (idx == 4) return uColor4;
-      if (idx == 5) return uColor5;
-      if (idx == 6) return uColor6;
-      return uColor7;
+  const float MAX_DIST = 20000.0;
+
+  float hash21(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+  }
+
+  float plasma(vec3 r, vec2 freq, vec4 tc) {
+    float mx = r.x + tc.x;
+    mx += uSwell * sin((r.y + mx) / 20.0 + tc.y);
+    float my = r.y - tc.z;
+    my += uTurbulence * cos(r.x / 23.0 + tc.w);
+    return r.z - (sin(mx * freq.x) * uAmplitude + sin(my * freq.y) * uAmplitude + uHeight);
+  }
+
+  float raymarch(vec3 pos, vec3 dir, vec2 freq, vec4 tc) {
+    float dist = 0.0;
+    for (int i = 0; i < 128; i++) {
+      if (float(i) >= uSteps) break;
+      float dscene = plasma(pos + dist * dir, freq, tc);
+      if (abs(dscene) < 0.1) break;
+      dist += 0.9 * dscene;
+      if (!(abs(dist) < MAX_DIST)) return MAX_DIST;
+    }
+    return dist;
+  }
+
+  void main() {
+    float T = iTime * uSpeed;
+    vec2 freq = vec2(uWaveScale / 7.0, (uWaveScale * uWaveRatio) / 3.0);
+    vec4 tc = vec4(T / 0.130, T / 0.810, T / 0.200, T / 0.710);
+    float c, s;
+    float vfov = (3.14159 / 2.3) / max(uZoom, 0.05);
+    vec3 cam = vec3(0.0, 0.0, 30.0);
+    vec2 uv = (gl_FragCoord.xy / iResolution.xy) - 0.5;
+    uv.x *= iResolution.x / iResolution.y;
+    uv.y *= -1.0;
+
+    vec3 dir = vec3(0.0, 0.0, -1.0);
+    float ulen = length(uv);
+    float xrot = vfov * ulen;
+    c = cos(xrot); s = sin(xrot);
+    dir = mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c) * dir;
+    vec2 nuv = ulen > 1e-5 ? uv / ulen : vec2(1.0, 0.0);
+    c = nuv.x; s = nuv.y;
+    dir = mat3(c, -s, 0.0, s, c, 0.0, 0.0, 0.0, 1.0) * dir;
+    c = cos(uTilt); s = sin(uTilt);
+    dir = mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c) * dir;
+
+    if (uEnableMouse) {
+      float yaw = (uMouse.x - 0.5) * uParallax * 0.4;
+      float pitch = (uMouse.y - 0.5) * uParallax * 0.4;
+      c = cos(yaw); s = sin(yaw);
+      dir = mat3(c, 0.0, s, 0.0, 1.0, 0.0, -s, 0.0, c) * dir;
+      c = cos(pitch); s = sin(pitch);
+      dir = mat3(1.0, 0.0, 0.0, 0.0, c, -s, 0.0, s, c) * dir;
     }
 
-    vec3 tanhv(vec3 x) {
-      vec3 e = exp(-2.0 * x);
-      return (1.0 - e) / (1.0 + e);
+    float dist = raymarch(cam, dir, freq, tc);
+    vec3 pos = cam + dist * dir;
+
+    float t = clamp(uFogDepth / max(dist, 0.001), 0.0, 1.0);
+    vec3 body = mix(uWaveColor, uCrestColor, clamp(pos.z * 0.08 + 0.5, 0.0, 1.0));
+    vec3 col = mix(uHorizonColor, body, t);
+    col *= uBrightness;
+    col = clamp(col, 0.0, 1.0);
+
+    float alpha = clamp(t, 0.0, 1.0) * uOpacity;
+    if (uGrain > 0.5) {
+      float g = hash21(gl_FragCoord.xy + mod(iTime, 64.0) * 11.0);
+      alpha += (g - 0.5) * uGrainIntensity;
     }
-
-    vec2 sceneC(vec2 frag, vec2 r) {
-      vec2 P = (frag + frag - r) / r.x;
-      float z = 0.0;
-      float d = 1e3;
-      vec4 O = vec4(0.0);
-      for (int k = 0; k < 39; k++) {
-        if (d <= 1e-4) break;
-        O = z * normalize(vec4(P, uZoom, 0.0)) - vec4(0.0, 4.0, 1.0, 0.0) / 4.5;
-        d = 1.0 - sqrt(length(O * O));
-        z += d;
-      }
-      return vec2(O.x, atan(O.z, O.y));
-    }
-
-    void mainImage(out vec4 o, vec2 C) {
-      vec2 r = iResolution.xy;
-      vec2 uv0 = (C + C - r) / r.x;
-      float T = 0.1 * iTime * uSpeed + 9.0;
-      float angRings = max(1.0, floor(6.28318530718 * max(uDensity, 0.05) + 0.5));
-      vec2 Y = vec2(5e-3, 6.28318530718 / angRings);
-
-      vec2 c0 = sceneC(C, r);
-      vec2 cdx = sceneC(C + vec2(1.0, 0.0), r);
-      vec2 cdy = sceneC(C + vec2(0.0, 1.0), r);
-      vec2 dCx = cdx - c0;
-      vec2 dCy = cdy - c0;
-      dCx.y -= 6.28318530718 * floor(dCx.y / 6.28318530718 + 0.5);
-      dCy.y -= 6.28318530718 * floor(dCy.y / 6.28318530718 + 0.5);
-      vec2 fw = abs(dCx) + abs(dCy);
-      C = c0;
-
-      vec2 P = vec2(2.0, 1.0) * uv0 - (r / r.x) * vec2(0.0, 1.0);
-      vec4 O = uLightMode > 0.5
-        ? vec4(0.0)
-        : vec4(uBgColor * 90.0 * uBgGlow / (1e3 * dot(P, P) + 6.0), 0.0);
-
-      float mGlow = 0.0;
-      if (uMouseEnabled > 0.5) {
-        vec2 mN = (iMouse + iMouse - r) / r.x;
-        float md = length(uv0 - mN);
-        mGlow = exp(-md * md / max(uMouseRadius * uMouseRadius, 1e-4)) * uMouseStrength;
-        O.rgb += uMouseColor * mGlow * 0.25;
-      }
-
-      for (int i = 0; i < 24; i++) {
-        if (i >= uStreakCount) break;
-        float fi = float(i);
-        float seed = fi * 1.61803398875;
-        float th = fi * Y.y + sin(seed * 12.34) * 0.5;
-        float rad = 0.15 + 0.8 * fract(seed * 7.13);
-        vec2 pos = vec2(rad * cos(th), rad * sin(th));
-
-        vec2 u = (C - pos) / Y;
-        float dist = length(u);
-        float tw = sin(iTime * 2.0 + seed * 6.28) * 0.5 + 0.5;
-        float bright = exp(-dist * dist / (0.02 * uStreakWidth)) * (1.0 - uTwinkle + uTwinkle * tw);
-        
-        vec3 col = palette(fract(seed + 0.1 * iTime * uSpeed));
-        O.rgb += col * bright * uGlow;
-      }
-
-      O.rgb = tanhv(O.rgb);
-      o = vec4(O.rgb * uOpacity, uOpacity);
-    }
-
-    void main() {
-      mainImage(gl_FragColor, vUv * iResolution.xy);
-    }
+    alpha = clamp(alpha, 0.0, 1.0);
+    fragColor = vec4(col * alpha, alpha);
+  }
   `;
 
   function createShader(gl, type, source) {
@@ -576,8 +549,8 @@ LIGHTFALL_HTML = """
   }
 
   const program = gl.createProgram();
-  gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
-  gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
+  gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexSrc));
+  gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc));
   gl.linkProgram(program);
   gl.useProgram(program);
 
@@ -592,58 +565,63 @@ LIGHTFALL_HTML = """
   gl.enableVertexAttribArray(posLoc);
   gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
-  const uvLoc = gl.getAttribLocation(program, 'uv');
-  gl.enableVertexAttribArray(uvLoc);
-  gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 0, 0);
-
   const uniforms = {
     iResolution: gl.getUniformLocation(program, 'iResolution'),
     iTime: gl.getUniformLocation(program, 'iTime'),
-    iMouse: gl.getUniformLocation(program, 'iMouse'),
-    uColor0: gl.getUniformLocation(program, 'uColor0'),
-    uColor1: gl.getUniformLocation(program, 'uColor1'),
-    uColor2: gl.getUniformLocation(program, 'uColor2'),
-    uColor3: gl.getUniformLocation(program, 'uColor3'),
-    uColorCount: gl.getUniformLocation(program, 'uColorCount'),
-    uBgColor: gl.getUniformLocation(program, 'uBgColor'),
-    uMouseColor: gl.getUniformLocation(program, 'uMouseColor'),
     uSpeed: gl.getUniformLocation(program, 'uSpeed'),
-    uStreakCount: gl.getUniformLocation(program, 'uStreakCount'),
-    uStreakWidth: gl.getUniformLocation(program, 'uStreakWidth'),
-    uStreakLength: gl.getUniformLocation(program, 'uStreakLength'),
-    uGlow: gl.getUniformLocation(program, 'uGlow'),
-    uDensity: gl.getUniformLocation(program, 'uDensity'),
-    uTwinkle: gl.getUniformLocation(program, 'uTwinkle'),
+    uAmplitude: gl.getUniformLocation(program, 'uAmplitude'),
+    uWaveScale: gl.getUniformLocation(program, 'uWaveScale'),
+    uWaveRatio: gl.getUniformLocation(program, 'uWaveRatio'),
+    uSwell: gl.getUniformLocation(program, 'uSwell'),
+    uTurbulence: gl.getUniformLocation(program, 'uTurbulence'),
+    uTilt: gl.getUniformLocation(program, 'uTilt'),
     uZoom: gl.getUniformLocation(program, 'uZoom'),
-    uBgGlow: gl.getUniformLocation(program, 'uBgGlow'),
+    uHeight: gl.getUniformLocation(program, 'uHeight'),
+    uFogDepth: gl.getUniformLocation(program, 'uFogDepth'),
+    uSteps: gl.getUniformLocation(program, 'uSteps'),
+    uBrightness: gl.getUniformLocation(program, 'uBrightness'),
     uOpacity: gl.getUniformLocation(program, 'uOpacity'),
-    uMouseEnabled: gl.getUniformLocation(program, 'uMouseEnabled'),
-    uMouseStrength: gl.getUniformLocation(program, 'uMouseStrength'),
-    uMouseRadius: gl.getUniformLocation(program, 'uMouseRadius'),
-    uLightMode: gl.getUniformLocation(program, 'uLightMode'),
+    uGrain: gl.getUniformLocation(program, 'uGrain'),
+    uGrainIntensity: gl.getUniformLocation(program, 'uGrainIntensity'),
+    uMouse: gl.getUniformLocation(program, 'uMouse'),
+    uParallax: gl.getUniformLocation(program, 'uParallax'),
+    uEnableMouse: gl.getUniformLocation(program, 'uEnableMouse'),
+    uHorizonColor: gl.getUniformLocation(program, 'uHorizonColor'),
+    uWaveColor: gl.getUniformLocation(program, 'uWaveColor'),
+    uCrestColor: gl.getUniformLocation(program, 'uCrestColor'),
   };
 
-  gl.uniform3fv(uniforms.uColor0, arr[0]);
-  gl.uniform3fv(uniforms.uColor1, arr[1]);
-  gl.uniform3fv(uniforms.uColor2, arr[2]);
-  gl.uniform3fv(uniforms.uColor3, arr[3]);
-  gl.uniform1i(uniforms.uColorCount, 4);
-  gl.uniform3fv(uniforms.uBgColor, [0.03, 0.05, 0.12]);
-  gl.uniform3fv(uniforms.uMouseColor, avg);
-  gl.uniform1f(uniforms.uSpeed, 0.8);
-  gl.uniform1i(uniforms.uStreakCount, 16);
-  gl.uniform1f(uniforms.uStreakWidth, 1.0);
-  gl.uniform1f(uniforms.uStreakLength, 1.2);
-  gl.uniform1f(uniforms.uGlow, 1.0);
-  gl.uniform1f(uniforms.uDensity, 0.8);
-  gl.uniform1f(uniforms.uTwinkle, 0.3);
+  const hc = hexToRgb('#0f766e');
+  const wc = hexToRgb('#38bdf8');
+  const cc = hexToRgb('#ffffff');
+
+  gl.uniform1f(uniforms.uSpeed, 0.4);
+  gl.uniform1f(uniforms.uAmplitude, 2.5);
+  gl.uniform1f(uniforms.uWaveScale, 0.6);
+  gl.uniform1f(uniforms.uWaveRatio, 0.9);
+  gl.uniform1f(uniforms.uSwell, 35.0);
+  gl.uniform1f(uniforms.uTurbulence, 20.0);
+  gl.uniform1f(uniforms.uTilt, 1.11);
   gl.uniform1f(uniforms.uZoom, 1.0);
-  gl.uniform1f(uniforms.uBgGlow, 1.0);
+  gl.uniform1f(uniforms.uHeight, 5.5);
+  gl.uniform1f(uniforms.uFogDepth, 15.0);
+  gl.uniform1f(uniforms.uSteps, 70.0);
+  gl.uniform1f(uniforms.uBrightness, 1.0);
   gl.uniform1f(uniforms.uOpacity, 0.65);
-  gl.uniform1f(uniforms.uMouseEnabled, 1.0);
-  gl.uniform1f(uniforms.uMouseStrength, 1.2);
-  gl.uniform1f(uniforms.uMouseRadius, 0.25);
-  gl.uniform1f(uniforms.uLightMode, 0.0);
+  gl.uniform1f(uniforms.uGrain, 1.0);
+  gl.uniform1f(uniforms.uGrainIntensity, 0.05);
+  gl.uniform1f(uniforms.uParallax, 0.5);
+  gl.uniform1i(uniforms.uEnableMouse, 1);
+  gl.uniform3fv(uniforms.uHorizonColor, hc);
+  gl.uniform3fv(uniforms.uWaveColor, wc);
+  gl.uniform3fv(uniforms.uCrestColor, cc);
+
+  let mouseX = 0.5, mouseY = 0.5;
+  let curMouseX = 0.5, curMouseY = 0.5;
+  window.addEventListener('mousemove', e => {
+    mouseX = e.clientX / window.innerWidth;
+    mouseY = 1.0 - (e.clientY / window.innerHeight);
+  });
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -653,18 +631,14 @@ LIGHTFALL_HTML = """
   window.addEventListener('resize', resize);
   resize();
 
-  let mouseX = 0, mouseY = 0;
-  window.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = window.innerHeight - e.clientY;
-  });
-
   const startTime = performance.now();
   function render() {
     const elapsed = (performance.now() - startTime) / 1000;
-    gl.uniform3f(uniforms.iResolution, canvas.width, canvas.height, 1.0);
+    curMouseX += 0.05 * (mouseX - curMouseX);
+    curMouseY += 0.05 * (mouseY - curMouseY);
+    gl.uniform2f(uniforms.iResolution, canvas.width, canvas.height);
     gl.uniform1f(uniforms.iTime, elapsed);
-    gl.uniform2f(uniforms.iMouse, mouseX, mouseY);
+    gl.uniform2f(uniforms.uMouse, curMouseX, curMouseY);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     requestAnimationFrame(render);
   }
@@ -673,8 +647,8 @@ LIGHTFALL_HTML = """
 </script>
 """
 
-# Render WebGL Lightfall Background via components
-components.html(LIGHTFALL_HTML, height=0)
+# Render WebGL GradientWaves Background via components
+components.html(GRADIENT_WAVES_HTML, height=0)
 
 # Custom Accessible CSS
 st.markdown("""

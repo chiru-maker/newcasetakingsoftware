@@ -15,6 +15,7 @@ import { useResendCooldown } from '../hooks/useResendCooldown';
 import { useAudioGuide } from '../hooks/useAudioGuide';
 import type { TranslationKey } from '../utils/audioTranslations';
 import Lightfall from '../components/Lightfall';
+import GradientWaves from '../components/GradientWaves';
 import logoPNG from '../assets/logo.png';
 
 // ── Profile picture imports ───────────────────────────────────────────
@@ -537,24 +538,29 @@ export function Login({ onSessionStarted }: Props) {
   // ─────────────────────────────────────────────────────────────────
   return (
     <div className={`relative flex-1 h-full w-full flex flex-col items-center justify-center overflow-y-auto ${step === 'CONSENT' ? '' : 'p-4 sm:p-6 bg-gradient-to-br from-slate-50 to-blue-50/30'}`}>
-      {/* Interactive Ambient Lightfall Background */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-25">
-        <Lightfall
-          colors={['#93C5FD', '#3B82F6', '#60A5FA']}
-          backgroundColor="#0284C7"
-          speed={0.4}
-          streakCount={3}
-          streakWidth={1.2}
-          streakLength={1.0}
-          glow={1.1}
-          density={0.45}
-          twinkle={0.7}
-          zoom={2.5}
-          backgroundGlow={0.25}
-          opacity={0.35}
+      {/* Interactive Ambient GradientWaves Background */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-35">
+        <GradientWaves
+          horizonColor="#0f766e"
+          waveColor="#38bdf8"
+          crestColor="#ffffff"
+          speed={0.35}
+          amplitude={2.2}
+          waveScale={0.6}
+          waveRatio={0.9}
+          swell={35}
+          turbulence={18}
+          tilt={1.11}
+          zoom={1.0}
+          height={5.5}
+          fogDepth={15}
+          detail="medium"
+          brightness={1.0}
+          opacity={0.55}
           mouseInteraction={true}
-          mouseStrength={0.5}
-          mouseRadius={0.7}
+          parallaxStrength={0.5}
+          grain={true}
+          grainIntensity={0.04}
         />
       </div>
 
