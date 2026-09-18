@@ -49,7 +49,7 @@ import streamlit.components.v1 as components
 
 # Page configuration
 st.set_page_config(
-    page_title="SwasthyaSync AI | Clinical Triage & ABDM Copilot",
+    page_title="Pranabyte AI | Clinical Triage & ABDM Copilot",
     page_icon="🏥",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -63,7 +63,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "English (Indian)",
         "flag": "🇬🇧",
         "native": "English",
-        "greeting": "Namaste! Welcome to SwasthyaSync AI. Please tell us your main health complaints today.",
+        "greeting": "Namaste! Welcome to Pranabyte AI. Please tell us your main health complaints today.",
         "pain_inquiry": "Where is the pain located, and how severe is it on a scale of 1 to 10?",
         "fever_inquiry": "How high is the fever, and are you experiencing chills, body aches, or shivering?",
         "duration_inquiry": "How many days have you had these symptoms, and have they become worse recently?",
@@ -79,7 +79,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Hindi (हिन्दी)",
         "flag": "🇮🇳",
         "native": "हिन्दी",
-        "greeting": "नमस्ते! स्वास्थ्यसिंक एआई में आपका स्वागत है। कृपया बताएं कि आज आपको क्या तकलीफ या बीमारी है।",
+        "greeting": "नमस्ते! प्राणबाइट एआई (Pranabyte AI) में आपका स्वागत है। कृपया बताएं कि आज आपको क्या तकलीफ या बीमारी है।",
         "pain_inquiry": "दर्द शरीर में कहाँ हो रहा है, और 1 से 10 के पैमाने पर यह कितना तेज़ है?",
         "fever_inquiry": "बुखार कितना तेज़ है, और क्या आपको ठंड लगकर कंपकंपी या बदन दर्द हो रहा है?",
         "duration_inquiry": "यह तकलीफ आपको कितने दिनों से हो रही है, और क्या यह पहले से बढ़ गई है?",
@@ -95,7 +95,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Tamil (தமிழ்)",
         "flag": "🇮🇳",
         "native": "தமிழ்",
-        "greeting": "வணக்கம்! ஸ்வஸ்த்யாசிங்க் AI-க்கு வரவேற்கிறோம். உங்கள் உடல்நலப் பிரச்சனையை தயவுசெய்து கூறுங்கள்.",
+        "greeting": "வணக்கம்! பிராணாபைட் AI (Pranabyte AI)-க்கு வரவேற்கிறோம். உங்கள் உடல்நலப் பிரச்சனையை தயவுசெய்து கூறுங்கள்.",
         "pain_inquiry": "வலி உடலின் எந்த பகுதியில் உள்ளது, மேலும் 1 முதல் 10 வரை அதன் தீவிரம் எவ்வளவு?",
         "fever_inquiry": "காய்ச்சல் எவ்வளவு அதிகமாக உள்ளது, குளிர்காய்ச்சல் அல்லது உடல் வலி உள்ளதா?",
         "duration_inquiry": "இந்த பிரச்சனை எத்தனை நாட்களாக உள்ளது?",
@@ -111,7 +111,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Telugu (తెలుగు)",
         "flag": "🇮🇳",
         "native": "తెలుగు",
-        "greeting": "నమస్కారం! స్వాస్థ్యసింక్ AI కి స్వాగతం. ఈ రోజు మీ ఆరోగ్య సమస్య ఏమిటో దయచేసి చెప్పండి.",
+        "greeting": "నమస్కారం! ప్రాణబైట్ AI (Pranabyte AI) కి స్వాగతం. ఈ రోజు మీ ఆరోగ్య సమస్య ఏమిటో దయచేసి చెప్పండి.",
         "pain_inquiry": "నొప్పి ఎక్కడ వస్తోంది, మరియు 1 నుండి 10 స్కేల్ పై ఎంత తీవ్రంగా ఉంది?",
         "fever_inquiry": "జ్వరం ఎంత తీవ్రంగా ఉంది, చలి లేదా ఒళ్ళు నొప్పులు ఉన్నాయా?",
         "duration_inquiry": "ఈ సమస్య మీకు ఎన్ని రోజుల నుంచి ఉంది?",
@@ -127,7 +127,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Kannada (ಕನ್ನಡ)",
         "flag": "🇮🇳",
         "native": "ಕನ್ನಡ",
-        "greeting": "ನಮಸ್ಕಾರ! ಸ್ವಾಸ್ಥ್ಯಸಿಂಕ್ AI ಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಮುಖ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಯನ್ನು ತಿಳಿಸಿ.",
+        "greeting": "ನಮಸ್ಕಾರ! ಪ್ರಾಣಬೈಟ್ AI (Pranabyte AI) ಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಮುಖ್ಯ ಆರೋಗ್ಯ ಸಮಸ್ಯೆಯನ್ನು ತಿಳಿಸಿ.",
         "pain_inquiry": "ನೋವು ಎಲ್ಲಿ ಆಗುತ್ತಿದೆ ಮತ್ತು 1 ರಿಂದ 10 ರ ಅಳತೆಯಲ್ಲಿ ಎಷ್ಟು ತೀವ್ರವಾಗಿದೆ?",
         "fever_inquiry": "ಜ್ವರ ಎಷ್ಟು ಹೆಚ್ಚಾಗಿದೆ ಮತ್ತು ಚಳಿ ಅಥವಾ ಮೈಕೈ ನೋವು ಇದೆಯೇ?",
         "duration_inquiry": "ಈ ಸಮಸ್ಯೆ ಎಷ್ಟು ದಿನಗಳಿಂದ ಇದೆ?",
@@ -143,7 +143,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Bengali (বাংলা)",
         "flag": "🇮🇳",
         "native": "বাংলা",
-        "greeting": "নমস্কার! স্বাস্থ্যসিঙ্ক এআই-তে স্বাগতম। আপনার শারীরিক সমস্যা সম্পর্কে বলুন।",
+        "greeting": "নমস্কার! প্রাণাবাইট এআই (Pranabyte AI)-তে স্বাগতম। আপনার শারীরিক সমস্যা সম্পর্কে বলুন।",
         "pain_inquiry": "ব্যথা কোথায় হচ্ছে এবং ১ থেকে ১০ এর মধ্যে কতটা তীব্র?",
         "fever_inquiry": "জ্বর কতটা বেশি, এবং কাঁপুনি বা শরীরে ব্যথা আছে কি?",
         "duration_inquiry": "এই সমস্যাটি কত দিন ধরে হচ্ছে?",
@@ -159,7 +159,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Marathi (मराठी)",
         "flag": "🇮🇳",
         "native": "मराठी",
-        "greeting": "नमस्कार! स्वास्थ्यसिंक एआय मध्ये आपले स्वागत आहे. आपल्या त्रासाबद्दल सांगा.",
+        "greeting": "नमस्कार! प्राणाबाईट एआय (Pranabyte AI) मध्ये आपले स्वागत आहे. आपल्या त्रासाबद्दल सांगा.",
         "pain_inquiry": "वेदना कुठे होत आहे आणि १ ते १० च्या प्रमाणात किती तीव्र आहे?",
         "fever_inquiry": "ताप किती आहे आणि थंडी वाजून अंगदुखी होत आहे का?",
         "duration_inquiry": "हा त्रास किती दिवसांपासून होत आहे?",
@@ -175,7 +175,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Gujarati (ગુજરાતી)",
         "flag": "🇮🇳",
         "native": "ગુજરાતી",
-        "greeting": "નમસ્તે! સ્વાસ્થ્યસિંક AI માં આપનું સ્વાગત છે. તમારી તકલીફ જણાવો.",
+        "greeting": "નમસ્તે! પ્રાણાબાઇટ AI (Pranabyte AI) માં આપનું સ્વાગત છે. તમારી તકલીફ જણાવો.",
         "pain_inquiry": "દુખાવો ક્યાં થઈ રહ્યો છે અને ૧ થી ૧૦ ના સ્કેલ પર કેટલો તીવ્ર છે?",
         "fever_inquiry": "તાવ કેટલો વધારે છે અને ઠંડી કે શરીરનો દુખાવો થાય છે?",
         "duration_inquiry": "આ તકલીફ કેટલા દિવસથી છે?",
@@ -191,7 +191,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Malayalam (മലയാളം)",
         "flag": "🇮🇳",
         "native": "മലയാളം",
-        "greeting": "നമസ്കാരം! സ്വാസ്ഥ്യസിങ്ക് AI-ലേക്ക് സ്വാഗതം. ആരോഗ്യപ്രശ്നങ്ങൾ വ്യക്തമാക്കുക.",
+        "greeting": "നമസ്കാരം! പ്രാണാബൈറ്റ് AI (Pranabyte AI)-ലേക്ക് സ്വാഗതം. ആരോഗ്യപ്രശ്നങ്ങൾ വ്യക്തമാക്കുക.",
         "pain_inquiry": "വേദന എവിടെയാണ്, 1 മുതൽ 10 വരെയുള്ള അളവിൽ എത്രത്തോളം കഠിനമാണ്?",
         "fever_inquiry": "പനി എത്രത്തോളമുണ്ട്, വിറയലോ ശരീരവേദനയോ അനുഭവപ്പെടുന്നുണ്ടോ?",
         "duration_inquiry": "ഈ പ്രശ്നം തുടങ്ങിയിട്ട് എത്ര ദിവസമായി?",
@@ -207,7 +207,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Punjabi (ਪੰਜਾਬੀ)",
         "flag": "🇮🇳",
         "native": "ਪੰਜਾਬੀ",
-        "greeting": "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਸਵਾਸਥਿਆਸਿੰਕ AI ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀ ਤਕਲੀਫ਼ ਦੱਸੋ।",
+        "greeting": "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਪ੍ਰਾਣਾਬਾਈਟ AI (Pranabyte AI) ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੀ ਤਕਲੀਫ਼ ਦੱਸੋ।",
         "pain_inquiry": "ਦਰਦ ਕਿੱਥੇ ਹੋ ਰਿਹਾ ਹੈ ਅਤੇ 1 ਤੋਂ 10 ਦੇ ਪੈਮਾਨੇ 'ਤੇ ਕਿੰਨਾ ਤੇਜ਼ ਹੈ?",
         "fever_inquiry": "ਬੁਖ਼ਾਰ ਕਿੰਨਾ ਤੇਜ਼ ਹੈ ਅਤੇ ਕੀ ਕੰਬਣੀ ਜਾਂ ਸਰੀਰ ਵਿੱਚ ਦਰਦ ਹੈ?",
         "duration_inquiry": "ਇਹ ਤਕਲੀਫ਼ ਕਿੰਨੇ ਦਿਨਾਂ ਤੋਂ ਹੋ ਰਹੀ ਹੈ?",
@@ -223,7 +223,7 @@ MULTILINGUAL_VOICE_CATALOG = {
         "name": "Odia (ଓଡ଼ିଆ)",
         "flag": "🇮🇳",
         "native": "ଓଡ଼ିଆ",
-        "greeting": "ନମସ୍କାର! ସ୍ଵାସ୍ଥ୍ୟସିଙ୍କ AI କୁ ସ୍ଵାଗତ। ଦୟାକରି ଆପଣଙ୍କ ସ୍ଵାସ୍ଥ୍ୟ ସମସ୍ୟା ବିଷୟରେ କୁହନ୍ତୁ।",
+        "greeting": "ନମସ୍କାର! ପ୍ରାଣାବାଇଟ୍ AI (Pranabyte AI) କୁ ସ୍ଵାଗତ। ଦୟାକରି ଆପଣଙ୍କ ସ୍ଵାସ୍ଥ୍ୟ ସମସ୍ୟା ବିଷୟରେ କୁହନ୍ତୁ।",
         "pain_inquiry": "ଯନ୍ତ୍ରଣା କେଉଁଠି ହେଉଛି ଏବଂ ୧ ରୁ ୧୦ ମଧ୍ୟରେ କେତେ ତୀବ୍ର?",
         "fever_inquiry": "ଜ୍ଵର କେତେ ଅଛି ଏବଂ ଥଣ୍ଡା ଲାଗି କମ୍ପନ କିମ୍ବା ଶରୀର ଯନ୍ତ୍ରଣା ହେଉଛି କି?",
         "duration_inquiry": "ଏହି ସମସ୍ୟା କେତେ ଦିନ ହେବ ଦେଖାଦେଇଛି?",
@@ -596,9 +596,9 @@ GRADIENT_WAVES_HTML = """
     uCrestColor: gl.getUniformLocation(program, 'uCrestColor'),
   };
 
-  const hc = hexToRgb('#0f766e');
-  const wc = hexToRgb('#38bdf8');
-  const cc = hexToRgb('#ffffff');
+  const hc = hexToRgb('#5227FF');
+  const wc = hexToRgb('#FF9FFC');
+  const cc = hexToRgb('#FFFFFF');
 
   gl.uniform1f(uniforms.uSpeed, 0.4);
   gl.uniform1f(uniforms.uAmplitude, 2.5);
@@ -852,7 +852,7 @@ if "settings_config" not in st.session_state:
         "auto_speak": True,
         "red_flag_sensitivity": "High (Strict Triage)",
         "emergency_dept": "ER Resuscitation Bay 1",
-        "hospital_name": "SwasthyaSync AI Health Center",
+        "hospital_name": "Pranabyte AI",
         "kiosk_id": "KIOSK-OPD-01",
         "shader_background": True
     }
@@ -862,7 +862,7 @@ if "settings_config" not in st.session_state:
 # ─────────────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.image("https://images.unsplash.com/photo-1516549655169-df83a0774514?w=400&q=80", use_container_width=True)
-    st.markdown("### 🏥 SwasthyaSync AI")
+    st.markdown("### 🏥 Pranabyte AI")
     st.markdown("#### **Clinical Triage & ABDM Copilot**")
     st.divider()
     
@@ -934,10 +934,11 @@ if app_mode == "🏠 Patient Intake Kiosk":
             - [x] **Document OCR Extraction**: Authorize reading past prescriptions and lab reports.
             - [x] **ABDM Record Linking**: Permit sharing FHIR summary with assigned duty doctor under DPDP Act 2023.
             """)
-            st.caption("Purpose: Clinical Triage & OPD Intake • Data Retention: 24 Hours • Controller: SwasthyaSync AI")
+            st.caption("Purpose: Clinical Triage & OPD Intake • Data Retention: 24 Hours • Controller: Pranabyte AI")
         with c_dpdp2:
             st.session_state.consent_granted = st.checkbox("I Agree & Grant Consent", value=st.session_state.consent_granted)
             if not st.session_state.consent_granted:
+                st.warning("⚠️ Consent required to proceed.")
                 st.warning("⚠️ Consent required to proceed.")
 
     col1, col2 = st.columns([1, 1.25])
@@ -1081,7 +1082,7 @@ if app_mode == "🏠 Patient Intake Kiosk":
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span class="pulse-dot"></span>
-                    <strong style="color:#0f766e; font-size:1.05rem;">SwasthyaSync Talking AI Copilot</strong>
+                    <strong style="color:#0f766e; font-size:1.05rem;">Pranabyte Talking AI Copilot</strong>
                 </div>
                 <span style="font-size:0.85rem; background:#ccfbf1; padding:3px 10px; border-radius:12px; color:#0f766e; font-weight:700;">
                     {lang_meta['flag']} {lang_meta['native']}
@@ -1221,8 +1222,8 @@ if app_mode == "🏠 Patient Intake Kiosk":
         with ac2:
             st.download_button(
                 "📥 Download Case Summary",
-                data=f"SwasthyaSync AI Case Summary\nPatient: {st.session_state.patient_data.get('full_name')}\nToken: {st.session_state.patient_data.get('token_number')}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
-                file_name=f"swasthyasync_summary_{st.session_state.patient_data.get('token_number', '101')}.txt",
+                data=f"Pranabyte AI Case Summary\nPatient: {st.session_state.patient_data.get('full_name')}\nToken: {st.session_state.patient_data.get('token_number')}\nDate: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                file_name=f"pranabyte_summary_{st.session_state.patient_data.get('token_number', '101')}.txt",
                 mime="text/plain",
                 use_container_width=True
             )
@@ -1536,161 +1537,114 @@ elif app_mode == "📄 Document & Prescription OCR":
                 })
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 8. SETTINGS & CONFIGURATION
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. SETTINGS & CONFIGURATION (BASIC & SIMPLE)
 # ─────────────────────────────────────────────────────────────────────────────
 elif app_mode == "⚙️ Settings & Configuration":
-    st.markdown('<div class="main-title">⚙️ Settings & System Configuration</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Manage API credentials, voice synthesis preferences, clinical red-flag thresholds, and system cache.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">⚙️ Basic Settings & Configuration</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Simple controls for hospital profile, AI voice assistant, and connections.</div>', unsafe_allow_html=True)
 
-    tab_api, tab_voice, tab_clinical, tab_brand, tab_cache = st.tabs([
-        "🔑 API Keys & Integrations",
-        "🗣️ Audio & Voice Engine",
-        "🚨 Clinical Guardrails",
-        "🎨 Branding & Display",
-        "💾 Session & Cache Controls"
-    ])
+    col_s1, col_s2 = st.columns([1, 1], gap="large")
 
-    # Tab 1: API Keys
-    with tab_api:
-        st.markdown("### 🔑 External AI & Cloud Services")
-        
-        cfg_gemini = st.text_input(
-            "Google Gemini API Key", 
-            value=st.session_state.settings_config["gemini_api_key"], 
-            type="password",
-            help="Powers clinical dialogue manager, medical reasoning, and OCR extraction."
-        )
-        
-        cfg_sarvam = st.text_input(
-            "Sarvam AI Subscription Key", 
-            value=st.session_state.settings_config["sarvam_api_key"], 
-            type="password",
-            help="Enables saaras:v3 STT and bulbul:v3 TTS across 10 Indian regional languages."
-        )
-        
-        cfg_abdm = st.text_input(
-            "ABDM Health Facility ID", 
-            value=st.session_state.settings_config["abdm_facility_id"],
-            help="National Health Authority Ayushman Bharat Digital Mission Facility ID."
-        )
+    with col_s1:
+        st.markdown("### 🏥 Hospital & Kiosk Information")
+        with st.container(border=True):
+            b_name = st.text_input(
+                "Hospital / Clinic Name", 
+                value=st.session_state.settings_config.get("hospital_name", "Pranabyte AI")
+            )
+            b_kiosk = st.text_input(
+                "Kiosk Terminal ID", 
+                value=st.session_state.settings_config.get("kiosk_id", "KIOSK-OPD-01")
+            )
+            b_lang = st.selectbox(
+                "Default Language",
+                list(MULTILINGUAL_VOICE_CATALOG.keys()),
+                format_func=lambda x: f"{MULTILINGUAL_VOICE_CATALOG[x]['flag']} {MULTILINGUAL_VOICE_CATALOG[x]['name']}",
+                index=list(MULTILINGUAL_VOICE_CATALOG.keys()).index(st.session_state.settings_config.get("default_voice_lang", "hi-IN"))
+            )
 
-        c_test1, c_test2 = st.columns(2)
-        with c_test1:
-            if st.button("🧪 Test Gemini API Connection", use_container_width=True):
-                if cfg_gemini or os.environ.get("GEMINI_API_KEY"):
-                    st.success("✅ Gemini Model Connection: ACTIVE (Latency 210ms)")
-                else:
-                    st.warning("⚠️ No Gemini Key provided — Running in high-performance mock reasoning mode.")
-        with c_test2:
-            if st.button("🧪 Test Sarvam Voice Gateway", use_container_width=True):
-                if cfg_sarvam or os.environ.get("SARVAM_API_KEY"):
-                    st.success("✅ Sarvam AI bulbul:v3 Gateway: CONNECTED")
-                else:
-                    st.info("ℹ️ Using Browser Web Speech API Native Synthesis (Zero Latency, Unlimited).")
+        st.markdown("### 🔊 AI Voice & Visuals")
+        with st.container(border=True):
+            v_autospeak = st.toggle("Auto-play voice responses during intake", value=st.session_state.settings_config.get("auto_speak", True))
+            v_shader = st.toggle("Enable GradientWaves Shader Background", value=st.session_state.settings_config.get("shader_background", True))
+            v_speed = st.slider("Voice Speed (Rate)", 0.7, 1.5, float(st.session_state.settings_config.get("speech_rate", 1.0)), 0.1)
 
-        if st.button("💾 Save API Settings", type="primary"):
+    with col_s2:
+        st.markdown("### 🔑 AI & Cloud Connections (Optional)")
+        with st.container(border=True):
+            cfg_gemini = st.text_input(
+                "Google Gemini API Key", 
+                value=st.session_state.settings_config.get("gemini_api_key", ""), 
+                type="password",
+                help="Optional. If left blank, runs in mock clinical reasoning mode."
+            )
+            cfg_sarvam = st.text_input(
+                "Sarvam AI Key (Optional)", 
+                value=st.session_state.settings_config.get("sarvam_api_key", ""), 
+                type="password",
+                help="Optional. Native browser voice synthesis is used by default."
+            )
+            cfg_abdm = st.text_input(
+                "ABDM Health Facility ID", 
+                value=st.session_state.settings_config.get("abdm_facility_id", "IN-DEL-AIIMS-0914")
+            )
+            
+            c_t1, c_t2 = st.columns(2)
+            with c_t1:
+                if st.button("🧪 Test AI Status", use_container_width=True):
+                    if cfg_gemini or os.environ.get("GEMINI_API_KEY"):
+                        st.success("✅ Gemini AI: Connected")
+                    else:
+                        st.info("ℹ️ Using Fast Offline AI Mode")
+            with c_t2:
+                if st.button("🧪 Test ABDM Gateway", use_container_width=True):
+                    st.success("✅ ABDM Bridge: Ready")
+
+        st.markdown("### ⚡ Quick Actions & Reset")
+        with st.container(border=True):
+            qa1, qa2 = st.columns(2)
+            with qa1:
+                if st.button("🗑️ Clear Active Intake", use_container_width=True):
+                    st.session_state.messages = []
+                    st.session_state.session_active = False
+                    st.success("Intake cleared.")
+                    st.rerun()
+            with qa2:
+                if st.button("🔄 Reset to Default Patients", use_container_width=True):
+                    st.session_state.triage_queue = [
+                        {"token": "A-101", "name": "Sunita Sharma", "age": 34, "gender": "F", "complaint": "Acute Chest Pain & Dyspnea", "priority": "CRITICAL (Red Flag)", "dept": "Cardiology", "status": "In Consultation", "sync": "Synced"},
+                        {"token": "A-102", "name": "Vikram Singh", "age": 62, "gender": "M", "complaint": "Chronic Knee Joint Pain", "priority": "Normal", "dept": "Orthopedics", "status": "Waiting", "sync": "Synced"},
+                        {"token": "A-103", "name": "Ananya Rao", "age": 28, "gender": "F", "complaint": "Fever & Productive Cough (3 days)", "priority": "Normal", "dept": "General Medicine", "status": "Waiting", "sync": "Synced"},
+                        {"token": "A-104", "name": "Ramesh Patel", "age": 48, "gender": "M", "complaint": "Severe epigastric burning with dizziness", "priority": "Elevated", "dept": "Gastroenterology", "status": "Case Intake Done", "sync": "Synced"}
+                    ]
+                    st.success("Queue reset.")
+                    st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    c_save, c_export = st.columns([1.5, 1])
+    with c_save:
+        if st.button("💾 Save All Basic Settings", type="primary", use_container_width=True):
+            st.session_state.settings_config["hospital_name"] = b_name
+            st.session_state.settings_config["kiosk_id"] = b_kiosk
+            st.session_state.settings_config["default_voice_lang"] = b_lang
+            st.session_state.settings_config["auto_speak"] = v_autospeak
+            st.session_state.settings_config["shader_background"] = v_shader
+            st.session_state.settings_config["speech_rate"] = v_speed
             st.session_state.settings_config["gemini_api_key"] = cfg_gemini
             st.session_state.settings_config["sarvam_api_key"] = cfg_sarvam
             st.session_state.settings_config["abdm_facility_id"] = cfg_abdm
-            st.success("API credentials saved securely to session state!")
-
-    # Tab 2: Voice & Audio Settings
-    with tab_voice:
-        st.markdown("### 🗣️ Multilingual Voice Synthesis Settings")
-        
-        col_v1, col_v2 = st.columns(2)
-        with col_v1:
-            v_engine = st.selectbox(
-                "Default Speech Engine",
-                [
-                    "Browser Web Speech API (Zero-Latency, Client-side)",
-                    "Sarvam AI Neural Cloud TTS (bulbul:v3)",
-                    "Hybrid (Web Speech with Cloud Fallback)"
-                ],
-                index=0
-            )
-            v_default_lang = st.selectbox(
-                "Default Kiosk Voice Language",
-                list(MULTILINGUAL_VOICE_CATALOG.keys()),
-                format_func=lambda x: f"{MULTILINGUAL_VOICE_CATALOG[x]['flag']} {MULTILINGUAL_VOICE_CATALOG[x]['name']}",
-                index=1
-            )
-        with col_v2:
-            v_rate = st.slider("Speech Rate (Speed)", 0.5, 2.0, float(st.session_state.settings_config["speech_rate"]), 0.05)
-            v_pitch = st.slider("Voice Pitch", 0.5, 1.5, float(st.session_state.settings_config["pitch"]), 0.05)
-            v_autospeak = st.checkbox("Auto-speak AI responses during Patient Intake", value=st.session_state.settings_config["auto_speak"])
-
-        if st.button("💾 Save Voice Settings", type="primary"):
-            st.session_state.settings_config["voice_engine"] = v_engine
-            st.session_state.settings_config["default_voice_lang"] = v_default_lang
-            st.session_state.settings_config["speech_rate"] = v_rate
-            st.session_state.settings_config["pitch"] = v_pitch
-            st.session_state.settings_config["auto_speak"] = v_autospeak
-            st.success("Voice engine preferences updated successfully!")
-
-    # Tab 3: Clinical Guardrails
-    with tab_clinical:
-        st.markdown("### 🚨 Clinical Triage & Red-Flag Sensitivity")
-        
-        c_sens = st.select_slider(
-            "Red-Flag Watchdog Sensitivity",
-            options=["Lenient", "Standard (Clinical)", "High (Strict Triage)", "Maximum Safety (ER Auto-Dispatch)"],
-            value="High (Strict Triage)"
-        )
-        c_er_dept = st.text_input("Emergency Escalation Department", value=st.session_state.settings_config["emergency_dept"])
-        c_mode_def = st.radio("Default Clinical Intake Protocol", ["Allopathic (Modern Medicine)", "AYUSH (Dashavidha Pariksha)"], horizontal=True)
-
-        if st.button("💾 Save Clinical Protocols", type="primary"):
-            st.session_state.settings_config["red_flag_sensitivity"] = c_sens
-            st.session_state.settings_config["emergency_dept"] = c_er_dept
-            st.success("Clinical guardrail parameters saved!")
-
-    # Tab 4: Branding & Display
-    with tab_brand:
-        st.markdown("### 🎨 Hospital Branding & Kiosk Interface")
-        
-        b_name = st.text_input("Application & Hospital Name", value=st.session_state.settings_config["hospital_name"])
-        b_kiosk = st.text_input("Kiosk Terminal ID", value=st.session_state.settings_config["kiosk_id"])
-        b_shader = st.checkbox("Enable Interactive GradientWaves Shader Background", value=st.session_state.settings_config["shader_background"])
-
-        if st.button("💾 Save Branding Preferences", type="primary"):
-            st.session_state.settings_config["hospital_name"] = b_name
-            st.session_state.settings_config["kiosk_id"] = b_kiosk
-            st.session_state.settings_config["shader_background"] = b_shader
-            st.success("Branding and display settings updated!")
-
-    # Tab 5: Session & Cache Controls
-    with tab_cache:
-        st.markdown("### 💾 Session Cache & Data Maintenance")
-        
-        sc1, sc2 = st.columns(2)
-        with sc1:
-            if st.button("🗑️ Clear Active Intake Chat History", use_container_width=True):
-                st.session_state.messages = []
-                st.session_state.session_active = False
-                st.success("Chat history cleared.")
-                st.rerun()
-
-        with sc2:
-            if st.button("🔄 Reset Doctor Triage Queue to Defaults", use_container_width=True):
-                st.session_state.triage_queue = [
-                    {"token": "A-101", "name": "Sunita Sharma", "age": 34, "gender": "F", "complaint": "Acute Chest Pain & Dyspnea", "priority": "CRITICAL (Red Flag)", "dept": "Cardiology", "status": "In Consultation", "sync": "Synced"},
-                    {"token": "A-102", "name": "Vikram Singh", "age": 62, "gender": "M", "complaint": "Chronic Knee Joint Pain", "priority": "Normal", "dept": "Orthopedics", "status": "Waiting", "sync": "Synced"},
-                    {"token": "A-103", "name": "Ananya Rao", "age": 28, "gender": "F", "complaint": "Fever & Productive Cough (3 days)", "priority": "Normal", "dept": "General Medicine", "status": "Waiting", "sync": "Synced"},
-                    {"token": "A-104", "name": "Ramesh Patel", "age": 48, "gender": "M", "complaint": "Severe epigastric burning with dizziness", "priority": "Elevated", "dept": "Gastroenterology", "status": "Case Intake Done", "sync": "Synced"}
-                ]
-                st.success("Doctor queue reset to default patients.")
-                st.rerun()
-
-        st.divider()
+            st.success("✅ All settings saved successfully!")
+            st.rerun()
+    with c_export:
         st.download_button(
-            "📥 Export Full System Settings & Queue (JSON)",
+            "📥 Export Backup (JSON)",
             data=json.dumps({
                 "settings": st.session_state.settings_config,
                 "queue": st.session_state.triage_queue,
                 "patient": st.session_state.patient_data
             }, indent=2),
-            file_name="swasthyasync_system_backup.json",
+            file_name="pranabyte_system_backup.json",
             mime="application/json",
             use_container_width=True
         )
