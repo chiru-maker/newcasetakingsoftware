@@ -1542,7 +1542,7 @@ elif app_mode == "📄 Document & Prescription OCR":
 # ─────────────────────────────────────────────────────────────────────────────
 elif app_mode == "⚙️ Settings & Configuration":
     st.markdown('<div class="main-title">⚙️ Basic Settings & Configuration</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Simple controls for hospital profile, AI voice assistant, and connections.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">Simple controls for hospital profile, voice assistant, and visual preferences.</div>', unsafe_allow_html=True)
 
     col_s1, col_s2 = st.columns([1, 1], gap="large")
 
@@ -1564,77 +1564,44 @@ elif app_mode == "⚙️ Settings & Configuration":
                 index=list(MULTILINGUAL_VOICE_CATALOG.keys()).index(st.session_state.settings_config.get("default_voice_lang", "hi-IN"))
             )
 
-        st.markdown("### 🔊 AI Voice & Visuals")
+    with col_s2:
+        st.markdown("### 🔊 Voice & Visual Preferences")
         with st.container(border=True):
             v_autospeak = st.toggle("Auto-play voice responses during intake", value=st.session_state.settings_config.get("auto_speak", True))
             v_shader = st.toggle("Enable GradientWaves Shader Background", value=st.session_state.settings_config.get("shader_background", True))
             v_speed = st.slider("Voice Speed (Rate)", 0.7, 1.5, float(st.session_state.settings_config.get("speech_rate", 1.0)), 0.1)
 
-    with col_s2:
-        st.markdown("### 🔑 AI & Cloud Connections (Optional)")
-        with st.container(border=True):
-            cfg_gemini = st.text_input(
-                "Google Gemini API Key", 
-                value=st.session_state.settings_config.get("gemini_api_key", ""), 
-                type="password",
-                help="Optional. If left blank, runs in mock clinical reasoning mode."
-            )
-            cfg_sarvam = st.text_input(
-                "Sarvam AI Key (Optional)", 
-                value=st.session_state.settings_config.get("sarvam_api_key", ""), 
-                type="password",
-                help="Optional. Native browser voice synthesis is used by default."
-            )
-            cfg_abdm = st.text_input(
-                "ABDM Health Facility ID", 
-                value=st.session_state.settings_config.get("abdm_facility_id", "IN-DEL-AIIMS-0914")
-            )
-            
-            c_t1, c_t2 = st.columns(2)
-            with c_t1:
-                if st.button("🧪 Test AI Status", use_container_width=True):
-                    if cfg_gemini or os.environ.get("GEMINI_API_KEY"):
-                        st.success("✅ Gemini AI: Connected")
-                    else:
-                        st.info("ℹ️ Using Fast Offline AI Mode")
-            with c_t2:
-                if st.button("🧪 Test ABDM Gateway", use_container_width=True):
-                    st.success("✅ ABDM Bridge: Ready")
-
-        st.markdown("### ⚡ Quick Actions & Reset")
-        with st.container(border=True):
-            qa1, qa2 = st.columns(2)
-            with qa1:
-                if st.button("🗑️ Clear Active Intake", use_container_width=True):
-                    st.session_state.messages = []
-                    st.session_state.session_active = False
-                    st.success("Intake cleared.")
-                    st.rerun()
-            with qa2:
-                if st.button("🔄 Reset to Default Patients", use_container_width=True):
-                    st.session_state.triage_queue = [
-                        {"token": "A-101", "name": "Sunita Sharma", "age": 34, "gender": "F", "complaint": "Acute Chest Pain & Dyspnea", "priority": "CRITICAL (Red Flag)", "dept": "Cardiology", "status": "In Consultation", "sync": "Synced"},
-                        {"token": "A-102", "name": "Vikram Singh", "age": 62, "gender": "M", "complaint": "Chronic Knee Joint Pain", "priority": "Normal", "dept": "Orthopedics", "status": "Waiting", "sync": "Synced"},
-                        {"token": "A-103", "name": "Ananya Rao", "age": 28, "gender": "F", "complaint": "Fever & Productive Cough (3 days)", "priority": "Normal", "dept": "General Medicine", "status": "Waiting", "sync": "Synced"},
-                        {"token": "A-104", "name": "Ramesh Patel", "age": 48, "gender": "M", "complaint": "Severe epigastric burning with dizziness", "priority": "Elevated", "dept": "Gastroenterology", "status": "Case Intake Done", "sync": "Synced"}
-                    ]
-                    st.success("Queue reset.")
-                    st.rerun()
+    st.markdown("### ⚡ Quick Actions & Reset")
+    with st.container(border=True):
+        qa1, qa2 = st.columns(2)
+        with qa1:
+            if st.button("🗑️ Clear Active Intake Chat History", use_container_width=True):
+                st.session_state.messages = []
+                st.session_state.session_active = False
+                st.success("Active intake cleared.")
+                st.rerun()
+        with qa2:
+            if st.button("🔄 Reset Doctor Triage Queue to Defaults", use_container_width=True):
+                st.session_state.triage_queue = [
+                    {"token": "A-101", "name": "Sunita Sharma", "age": 34, "gender": "F", "complaint": "Acute Chest Pain & Dyspnea", "priority": "CRITICAL (Red Flag)", "dept": "Cardiology", "status": "In Consultation", "sync": "Synced"},
+                    {"token": "A-102", "name": "Vikram Singh", "age": 62, "gender": "M", "complaint": "Chronic Knee Joint Pain", "priority": "Normal", "dept": "Orthopedics", "status": "Waiting", "sync": "Synced"},
+                    {"token": "A-103", "name": "Ananya Rao", "age": 28, "gender": "F", "complaint": "Fever & Productive Cough (3 days)", "priority": "Normal", "dept": "General Medicine", "status": "Waiting", "sync": "Synced"},
+                    {"token": "A-104", "name": "Ramesh Patel", "age": 48, "gender": "M", "complaint": "Severe epigastric burning with dizziness", "priority": "Elevated", "dept": "Gastroenterology", "status": "Case Intake Done", "sync": "Synced"}
+                ]
+                st.success("Doctor queue reset to default patients.")
+                st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
     c_save, c_export = st.columns([1.5, 1])
     with c_save:
-        if st.button("💾 Save All Basic Settings", type="primary", use_container_width=True):
+        if st.button("💾 Save Settings", type="primary", use_container_width=True):
             st.session_state.settings_config["hospital_name"] = b_name
             st.session_state.settings_config["kiosk_id"] = b_kiosk
             st.session_state.settings_config["default_voice_lang"] = b_lang
             st.session_state.settings_config["auto_speak"] = v_autospeak
             st.session_state.settings_config["shader_background"] = v_shader
             st.session_state.settings_config["speech_rate"] = v_speed
-            st.session_state.settings_config["gemini_api_key"] = cfg_gemini
-            st.session_state.settings_config["sarvam_api_key"] = cfg_sarvam
-            st.session_state.settings_config["abdm_facility_id"] = cfg_abdm
-            st.success("✅ All settings saved successfully!")
+            st.success("✅ Settings saved successfully!")
             st.rerun()
     with c_export:
         st.download_button(
