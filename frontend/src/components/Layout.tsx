@@ -7,6 +7,7 @@ import { useAudioGuideContext } from '../context/AudioGuideContext';
 import { UI_LANGUAGES } from '../i18n/translations';
 import { useTranslation } from '../hooks/useTranslation';
 import logoPNG from '../assets/logo.png';
+import { Plasma } from './Plasma';
 
 interface LayoutProps {
   children: ReactNode;
@@ -165,7 +166,23 @@ export function Layout({ children, isConnected = true, isKioskInterview = false 
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col w-full h-full relative overflow-hidden bg-slate-50">
+      <div className="flex-1 flex flex-col w-full h-full relative overflow-hidden bg-slate-50/70">
+        {/* Plasma Background Visual Layer */}
+        <div className="plasma-background fixed inset-0 z-0 pointer-events-none opacity-40">
+          <Plasma
+            color="#0d9488"
+            speed={0.6}
+            direction="forward"
+            scale={1.1}
+            opacity={0.35}
+            mouseInteractive={true}
+            renderScale={0.55}
+            maxDpr={1.5}
+            targetFps={60}
+            iterations={60}
+          />
+        </div>
+
         {/* Floating Header: ONLY rendered on non-interview screens */}
         {!isKioskInterview && (
           <div className="absolute top-4 left-0 right-0 z-40 flex justify-center px-4 pointer-events-none">

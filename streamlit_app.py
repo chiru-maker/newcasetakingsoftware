@@ -410,230 +410,338 @@ def render_voice_mic_listener(lang_code: str = "hi-IN", key_id: str = "mic_btn")
 # ─────────────────────────────────────────────────────────────────────────────
 # Grainient Interactive WebGL2 Shader Background (React Bits Port)
 # ─────────────────────────────────────────────────────────────────────────────
-GRAINIENT_HTML = """
-<script>
-(function() {
-  const targetDoc = window.parent.document || document;
-  if (targetDoc.getElementById('grainient-wrapper-global')) return;
+# ─────────────────────────────────────────────────────────────────────────────
+# Unique Dynamic Background Engine (Bio-Neural Synapse, Liquid Aurora, Cyber Silk, Stardust)
+# ─────────────────────────────────────────────────────────────────────────────
+def get_unique_background_html(bg_style: str = "🧬 Bio-Neural Synapse (Interactive)", enabled: bool = True, opacity: float = 0.42) -> str:
+    if not enabled:
+        return """
+        <script>
+        (function() {
+          const targetDoc = window.parent.document || document;
+          const old = targetDoc.getElementById('unique-bg-wrapper-global');
+          if (old) old.remove();
+        })();
+        </script>
+        """
+    
+    # JavaScript Payload generator based on theme
+    return f"""
+    <script>
+    (function() {{
+      const targetDoc = window.parent.document || document;
+      let wrapper = targetDoc.getElementById('unique-bg-wrapper-global');
+      if (wrapper) {{
+        wrapper.remove();
+      }}
+      
+      wrapper = targetDoc.createElement('div');
+      wrapper.id = 'unique-bg-wrapper-global';
+      wrapper.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden; opacity:{opacity}; transition: opacity 0.5s ease;';
+      
+      const canvas = targetDoc.createElement('canvas');
+      canvas.id = 'unique-bg-canvas';
+      canvas.style.cssText = 'width:100%; height:100%; display:block;';
+      wrapper.appendChild(canvas);
+      targetDoc.body.prepend(wrapper);
 
-  const wrapper = targetDoc.createElement('div');
-  wrapper.id = 'grainient-wrapper-global';
-  wrapper.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:0; overflow:hidden; opacity:0.35;';
+      const styleMode = "{bg_style}";
 
-  const canvas = targetDoc.createElement('canvas');
-  canvas.style.cssText = 'width:100%; height:100%; display:block;';
-  wrapper.appendChild(canvas);
-  targetDoc.body.prepend(wrapper);
+      if (styleMode.includes("Bio-Neural")) {{
+        // 🧬 Interactive Bio-Neural Synapse Constellation
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-  const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-  if (!gl) return;
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-  const hexToRgb = hex => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!result) return [1, 1, 1];
-    return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
-  };
+        const mouse = {{ x: width / 2, y: height / 2, active: false, radius: 220 }};
+        targetDoc.addEventListener('pointermove', e => {{
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          mouse.active = true;
+        }});
+        targetDoc.addEventListener('pointerleave', () => {{ mouse.active = false; }});
 
-  const vertexSrc = `#version 300 es
-  in vec2 position;
-  void main() {
-    gl_Position = vec4(position, 0.0, 1.0);
-  }
-  `;
+        function resize() {{
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        }}
+        window.addEventListener('resize', resize);
 
-  const fragmentSrc = `#version 300 es
-  precision highp float;
-  uniform vec2 iResolution;
-  uniform float iTime;
-  uniform float uTimeSpeed;
-  uniform float uColorBalance;
-  uniform float uWarpStrength;
-  uniform float uWarpFrequency;
-  uniform float uWarpSpeed;
-  uniform float uWarpAmplitude;
-  uniform float uBlendAngle;
-  uniform float uBlendSoftness;
-  uniform float uRotationAmount;
-  uniform float uNoiseScale;
-  uniform float uGrainAmount;
-  uniform float uGrainScale;
-  uniform float uGrainAnimated;
-  uniform float uContrast;
-  uniform float uGamma;
-  uniform float uSaturation;
-  uniform vec2 uCenterOffset;
-  uniform float uZoom;
-  uniform vec3 uColor1;
-  uniform vec3 uColor2;
-  uniform vec3 uColor3;
-  uniform float uLightMode;
-  out vec4 fragColor;
-  #define S(a,b,t) smoothstep(a,b,t)
-  mat2 Rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);} 
-  vec2 hash(vec2 p){p=vec2(dot(p,vec2(2127.1,81.17)),dot(p,vec2(1269.5,283.37)));return fract(sin(p)*43758.5453);} 
-  float noise(vec2 p){vec2 i=floor(p),f=fract(p),u=f*f*(3.0-2.0*f);float n=mix(mix(dot(-1.0+2.0*hash(i+vec2(0.0,0.0)),f-vec2(0.0,0.0)),dot(-1.0+2.0*hash(i+vec2(1.0,0.0)),f-vec2(1.0,0.0)),u.x),mix(dot(-1.0+2.0*hash(i+vec2(0.0,1.0)),f-vec2(0.0,1.0)),dot(-1.0+2.0*hash(i+vec2(1.0,1.0)),f-vec2(1.0,1.0)),u.x),u.y);return 0.5+0.5*n;}
-  void mainImage(out vec4 o, vec2 C){
-    float t=iTime*uTimeSpeed;
-    vec2 uv=C/iResolution.xy;
-    float ratio=iResolution.x/iResolution.y;
-    vec2 tuv=uv-0.5+uCenterOffset;
-    tuv/=max(uZoom,0.001);
+        const nodeCount = Math.min(Math.floor((width * height) / 16000), 85);
+        const nodes = [];
+        const palette = ['#0d9488', '#06b6d4', '#6366f1', '#38bdf8', '#10b981', '#a855f7'];
 
-    float degree=noise(vec2(t*0.1,tuv.x*tuv.y)*uNoiseScale);
-    tuv.y*=1.0/ratio;
-    tuv*=Rot(radians((degree-0.5)*uRotationAmount+180.0));
-    tuv.y*=ratio;
+        for (let i = 0; i < nodeCount; i++) {{
+          nodes.push({{
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+            radius: Math.random() * 2.6 + 1.4,
+            baseRadius: Math.random() * 2.6 + 1.4,
+            pulseSpeed: Math.random() * 0.03 + 0.015,
+            color: palette[Math.floor(Math.random() * palette.length)],
+            phase: Math.random() * Math.PI * 2
+          }});
+        }}
 
-    float frequency=uWarpFrequency;
-    float ws=max(uWarpStrength,0.001);
-    float amplitude=uWarpAmplitude/ws;
-    float warpTime=t*uWarpSpeed;
-    tuv.x+=sin(tuv.y*frequency+warpTime)/amplitude;
-    tuv.y+=sin(tuv.x*(frequency*1.5)+warpTime)/(amplitude*0.5);
+        let frame = 0;
+        function renderNeural() {{
+          frame++;
+          ctx.clearRect(0, 0, width, height);
 
-    vec3 colLav=uColor1;
-    vec3 colOrg=uColor2;
-    vec3 colDark=uColor3;
-    float b=uColorBalance;
-    float s=max(uBlendSoftness,0.0);
-    mat2 blendRot=Rot(radians(uBlendAngle));
-    float blendX=(tuv*blendRot).x;
-    float edge0=-0.3-b-s;
-    float edge1=0.2-b+s;
-    float v0=0.5-b+s;
-    float v1=-0.3-b-s;
-    vec3 layer1=mix(colDark,colOrg,S(edge0,edge1,blendX));
-    vec3 layer2=mix(colOrg,colLav,S(edge0,edge1,blendX));
-    vec3 col=mix(layer1,layer2,S(v0,v1,tuv.y));
+          // Subtle ambient radial background glow
+          const bgGrad = ctx.createRadialGradient(width * 0.5, height * 0.4, 100, width * 0.5, height * 0.5, width * 0.8);
+          bgGrad.addColorStop(0, 'rgba(13, 148, 136, 0.08)');
+          bgGrad.addColorStop(0.5, 'rgba(2, 132, 199, 0.05)');
+          bgGrad.addColorStop(1, 'rgba(240, 253, 250, 0.0)');
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, width, height);
 
-    vec2 grainUv=uv*max(uGrainScale,0.001);
-    if(uGrainAnimated>0.5){grainUv+=vec2(iTime*0.05);} 
-    float grain=fract(sin(dot(grainUv,vec2(12.9898,78.233)))*43758.5453);
-    col+=(grain-0.5)*uGrainAmount;
+          // Update & Draw Nodes
+          for (let i = 0; i < nodes.length; i++) {{
+            const n = nodes[i];
+            n.phase += n.pulseSpeed;
+            n.radius = n.baseRadius + Math.sin(n.phase) * 0.8;
+            n.x += n.vx;
+            n.y += n.vy;
 
-    col=(col-0.5)*uContrast+0.5;
-    float luma=dot(col,vec3(0.2126,0.7152,0.0722));
-    col=mix(vec3(luma),col,uSaturation);
-    col=pow(max(col,0.0),vec3(1.0/max(uGamma,0.001)));
-    col=clamp(col,0.0,1.0);
-    if(uLightMode>0.5){
-      float energy=max(max(col.r,col.g),col.b);
-      vec3 hue=col/max(energy,0.001);
-      float chroma=length(col-vec3(dot(col,vec3(0.333333))));
-      float coverage=clamp(0.12+chroma*1.15+energy*0.18,0.0,0.88);
-      col=mix(vec3(1.0),clamp(hue*0.58+col*0.18,0.0,1.0),coverage);
-    }
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
 
-    o=vec4(col,1.0);
-  }
-  void main(){
-    vec4 o=vec4(0.0);
-    mainImage(o,gl_FragCoord.xy);
-    fragColor=o;
-  }
-  `;
+            // Mouse proximity interaction
+            if (mouse.active) {{
+              const dx = mouse.x - n.x;
+              const dy = mouse.y - n.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < mouse.radius) {{
+                const force = (1 - dist / mouse.radius) * 0.8;
+                n.x -= (dx / dist) * force * 2.5;
+                n.y -= (dy / dist) * force * 2.5;
+                n.radius = n.baseRadius + force * 2.5;
+              }}
+            }}
 
-  function createShader(gl, type, source) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, source);
-    gl.compileShader(s);
-    return s;
-  }
+            // Draw Node with soft glow
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+            ctx.fillStyle = n.color;
+            ctx.shadowColor = n.color;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
 
-  const program = gl.createProgram();
-  gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexSrc));
-  gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc));
-  gl.linkProgram(program);
-  gl.useProgram(program);
+            // Connect nearby nodes
+            for (let j = i + 1; j < nodes.length; j++) {{
+              const n2 = nodes[j];
+              const dx = n.x - n2.x;
+              const dy = n.y - n2.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
 
-  const posBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1, -1,  1, -1, -1,  1,
-    -1,  1,  1, -1,  1,  1,
-  ]), gl.STATIC_DRAW);
+              if (dist < 155) {{
+                const alpha = (1 - dist / 155) * 0.35;
+                ctx.beginPath();
+                ctx.moveTo(n.x, n.y);
+                ctx.lineTo(n2.x, n2.y);
+                ctx.strokeStyle = `rgba(13, 148, 136, ${{alpha}})`;
+                ctx.lineWidth = 1.0;
+                ctx.stroke();
+              }}
+            }}
 
-  const posLoc = gl.getAttribLocation(program, 'position');
-  gl.enableVertexAttribArray(posLoc);
-  gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+            // Connect to mouse cursor
+            if (mouse.active) {{
+              const dx = n.x - mouse.x;
+              const dy = n.y - mouse.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 180) {{
+                const alpha = (1 - dist / 180) * 0.6;
+                ctx.beginPath();
+                ctx.moveTo(n.x, n.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.strokeStyle = `rgba(6, 182, 212, ${{alpha}})`;
+                ctx.lineWidth = 1.3;
+                ctx.stroke();
+              }}
+            }}
+          }}
 
-  const uniforms = {
-    iResolution: gl.getUniformLocation(program, 'iResolution'),
-    iTime: gl.getUniformLocation(program, 'iTime'),
-    uTimeSpeed: gl.getUniformLocation(program, 'uTimeSpeed'),
-    uColorBalance: gl.getUniformLocation(program, 'uColorBalance'),
-    uWarpStrength: gl.getUniformLocation(program, 'uWarpStrength'),
-    uWarpFrequency: gl.getUniformLocation(program, 'uWarpFrequency'),
-    uWarpSpeed: gl.getUniformLocation(program, 'uWarpSpeed'),
-    uWarpAmplitude: gl.getUniformLocation(program, 'uWarpAmplitude'),
-    uBlendAngle: gl.getUniformLocation(program, 'uBlendAngle'),
-    uBlendSoftness: gl.getUniformLocation(program, 'uBlendSoftness'),
-    uRotationAmount: gl.getUniformLocation(program, 'uRotationAmount'),
-    uNoiseScale: gl.getUniformLocation(program, 'uNoiseScale'),
-    uGrainAmount: gl.getUniformLocation(program, 'uGrainAmount'),
-    uGrainScale: gl.getUniformLocation(program, 'uGrainScale'),
-    uGrainAnimated: gl.getUniformLocation(program, 'uGrainAnimated'),
-    uContrast: gl.getUniformLocation(program, 'uContrast'),
-    uGamma: gl.getUniformLocation(program, 'uGamma'),
-    uSaturation: gl.getUniformLocation(program, 'uSaturation'),
-    uCenterOffset: gl.getUniformLocation(program, 'uCenterOffset'),
-    uZoom: gl.getUniformLocation(program, 'uZoom'),
-    uColor1: gl.getUniformLocation(program, 'uColor1'),
-    uColor2: gl.getUniformLocation(program, 'uColor2'),
-    uColor3: gl.getUniformLocation(program, 'uColor3'),
-    uLightMode: gl.getUniformLocation(program, 'uLightMode'),
-  };
+          if (mouse.active) {{
+            const curGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 80);
+            curGrad.addColorStop(0, 'rgba(6, 182, 212, 0.25)');
+            curGrad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+            ctx.fillStyle = curGrad;
+            ctx.beginPath();
+            ctx.arc(mouse.x, mouse.y, 80, 0, Math.PI * 2);
+            ctx.fill();
+          }}
 
-  const c1 = hexToRgb('#FF9FFC');
-  const c2 = hexToRgb('#5227FF');
-  const c3 = hexToRgb('#B497CF');
+          requestAnimationFrame(renderNeural);
+        }}
+        renderNeural();
 
-  gl.uniform1f(uniforms.uTimeSpeed, 0.25);
-  gl.uniform1f(uniforms.uColorBalance, 0.0);
-  gl.uniform1f(uniforms.uWarpStrength, 1.0);
-  gl.uniform1f(uniforms.uWarpFrequency, 5.0);
-  gl.uniform1f(uniforms.uWarpSpeed, 2.0);
-  gl.uniform1f(uniforms.uWarpAmplitude, 50.0);
-  gl.uniform1f(uniforms.uBlendAngle, 0.0);
-  gl.uniform1f(uniforms.uBlendSoftness, 0.05);
-  gl.uniform1f(uniforms.uRotationAmount, 500.0);
-  gl.uniform1f(uniforms.uNoiseScale, 2.0);
-  gl.uniform1f(uniforms.uGrainAmount, 0.1);
-  gl.uniform1f(uniforms.uGrainScale, 2.0);
-  gl.uniform1f(uniforms.uGrainAnimated, 0.0);
-  gl.uniform1f(uniforms.uContrast, 1.5);
-  gl.uniform1f(uniforms.uGamma, 1.0);
-  gl.uniform1f(uniforms.uSaturation, 1.0);
-  gl.uniform2f(uniforms.uCenterOffset, 0.0, 0.0);
-  gl.uniform1f(uniforms.uZoom, 0.9);
-  gl.uniform3fv(uniforms.uColor1, c1);
-  gl.uniform3fv(uniforms.uColor2, c2);
-  gl.uniform3fv(uniforms.uColor3, c3);
-  gl.uniform1f(uniforms.uLightMode, 0.0);
+      }} else if (styleMode.includes("Stardust") || styleMode.includes("Bioluminescent")) {{
+        // ✨ Bioluminescent Stardust Float
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-  }
-  window.addEventListener('resize', resize);
-  resize();
+        function resize() {{
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        }}
+        window.addEventListener('resize', resize);
 
-  const startTime = performance.now();
-  function render() {
-    const elapsed = (performance.now() - startTime) / 1000;
-    gl.uniform2f(uniforms.iResolution, canvas.width, canvas.height);
-    gl.uniform1f(uniforms.iTime, elapsed);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
-})();
-</script>
-"""
+        const particles = [];
+        const count = 90;
+        const colors = ['#14b8a6', '#38bdf8', '#818cf8', '#fbbf24', '#34d399'];
 
-# Render WebGL Grainient Background via components
-components.html(GRAINIENT_HTML, height=0)
+        for (let i = 0; i < count; i++) {{
+          particles.push({{
+            x: Math.random() * width,
+            y: Math.random() * height,
+            speedY: -(Math.random() * 0.6 + 0.2),
+            speedX: (Math.random() - 0.5) * 0.4,
+            size: Math.random() * 3 + 1,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: Math.random() * 0.7 + 0.3,
+            pulse: Math.random() * 0.02 + 0.01
+          }});
+        }}
+
+        function renderStardust() {{
+          ctx.clearRect(0, 0, width, height);
+          for (let p of particles) {{
+            p.y += p.speedY;
+            p.x += p.speedX;
+            p.alpha += Math.sin(Date.now() * 0.002 * p.pulse) * 0.01;
+
+            if (p.y < -10) {{ p.y = height + 10; p.x = Math.random() * width; }}
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = Math.max(0.1, Math.min(0.85, p.alpha));
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 12;
+            ctx.fill();
+            ctx.restore();
+          }}
+          requestAnimationFrame(renderStardust);
+        }}
+        renderStardust();
+
+      }} else {{
+        // 🌌 Liquid Aurora Plasma / Cyber Silk WebGL2 Shader
+        const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+        if (!gl) return;
+
+        const hexToRgb = hex => {{
+          const result = /^#?([a-f\\d]{{2}})([a-f\\d]{{2}})([a-f\\d]{{2}})$/i.exec(hex);
+          if (!result) return [0.05, 0.58, 0.53];
+          return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
+        }};
+
+        const vertexSrc = `#version 300 es
+        in vec2 position;
+        void main() {{
+          gl_Position = vec4(position, 0.0, 1.0);
+        }}
+        `;
+
+        const fragmentSrc = `#version 300 es
+        precision highp float;
+        uniform vec2 iResolution;
+        uniform float iTime;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
+        uniform vec3 uColor3;
+        out vec4 fragColor;
+
+        void main() {{
+          vec2 uv = gl_FragCoord.xy / iResolution.xy;
+          float t = iTime * 0.22;
+          
+          float wave1 = sin(uv.x * 4.0 + t + sin(uv.y * 3.0 + t * 0.7));
+          float wave2 = cos(uv.y * 4.5 - t * 0.9 + cos(uv.x * 3.5 + t * 0.5));
+          float combined = (wave1 + wave2) * 0.5;
+          
+          vec3 col = mix(uColor1, uColor2, smoothstep(-0.6, 0.6, combined));
+          col = mix(col, uColor3, smoothstep(0.1, 0.9, sin(uv.x * 6.0 - uv.y * 4.0 + t)));
+          
+          // Subtle vignetting and light mode normalization
+          float dist = distance(uv, vec2(0.5, 0.5));
+          col += vec3(0.12) * (1.0 - dist * 0.8);
+
+          fragColor = vec4(col, 1.0);
+        }}
+        `;
+
+        function createShader(gl, type, source) {{
+          const s = gl.createShader(type);
+          gl.shaderSource(s, source);
+          gl.compileShader(s);
+          return s;
+        }}
+
+        const program = gl.createProgram();
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexSrc));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentSrc));
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const posBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+          -1, -1,  1, -1, -1,  1,
+          -1,  1,  1, -1,  1,  1,
+        ]), gl.STATIC_DRAW);
+
+        const posLoc = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        const uRes = gl.getUniformLocation(program, 'iResolution');
+        const uTime = gl.getUniformLocation(program, 'iTime');
+        const uCol1 = gl.getUniformLocation(program, 'uColor1');
+        const uCol2 = gl.getUniformLocation(program, 'uColor2');
+        const uCol3 = gl.getUniformLocation(program, 'uColor3');
+
+        const c1 = hexToRgb('#0d9488'); // Emerald Teal
+        const c2 = hexToRgb('#0284c7'); // Ocean Cyan
+        const c3 = hexToRgb('#7c3aed'); // Royal Amethyst
+
+        gl.uniform3fv(uCol1, c1);
+        gl.uniform3fv(uCol2, c2);
+        gl.uniform3fv(uCol3, c3);
+
+        function resize() {{
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          gl.viewport(0, 0, canvas.width, canvas.height);
+        }}
+        window.addEventListener('resize', resize);
+        resize();
+
+        const startTime = performance.now();
+        function render() {{
+          const elapsed = (performance.now() - startTime) / 1000;
+          gl.uniform2f(uRes, canvas.width, canvas.height);
+          gl.uniform1f(uTime, elapsed);
+          gl.drawArrays(gl.TRIANGLES, 0, 6);
+          requestAnimationFrame(render);
+        }}
+        requestAnimationFrame(render);
+      }}
+    }})();
+    </script>
+    """
 
 # Custom Accessible Medical Aesthetic CSS
 st.markdown("""
@@ -834,8 +942,20 @@ if "settings_config" not in st.session_state:
         "emergency_dept": "ER Resuscitation Bay 1",
         "hospital_name": "Pranabyte AI",
         "kiosk_id": "KIOSK-OPD-01",
-        "shader_background": True
+        "shader_background": True,
+        "bg_style": "🧬 Bio-Neural Synapse (Interactive)",
+        "bg_opacity": 0.45
     }
+
+# Render Dynamic Background Component
+components.html(
+    get_unique_background_html(
+        bg_style=st.session_state.settings_config.get("bg_style", "🧬 Bio-Neural Synapse (Interactive)"),
+        enabled=st.session_state.settings_config.get("shader_background", True),
+        opacity=st.session_state.settings_config.get("bg_opacity", 0.45)
+    ),
+    height=0
+)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Sidebar Navigation
@@ -861,6 +981,30 @@ with st.sidebar:
         index=0
     )
     st.divider()
+    
+    with st.expander("🎨 Background Atmosphere", expanded=False):
+        bg_options = [
+            "🧬 Bio-Neural Synapse (Interactive)",
+            "🌌 Liquid Aurora Plasma (WebGL2)",
+            "✨ Bioluminescent Stardust (Float Glow)",
+            "🪐 Cyber Grainient Silk (Frosted Iridescent)",
+            "🌿 Frosted Medical Glass (Minimalist)"
+        ]
+        current_bg = st.session_state.settings_config.get("bg_style", "🧬 Bio-Neural Synapse (Interactive)")
+        current_idx = bg_options.index(current_bg) if current_bg in bg_options else 0
+        sel_bg = st.selectbox("Aura Theme", bg_options, index=current_idx)
+        if sel_bg != current_bg:
+            st.session_state.settings_config["bg_style"] = sel_bg
+            st.rerun()
+        
+        bg_active = st.toggle("Enable Background Effect", value=st.session_state.settings_config.get("shader_background", True))
+        if bg_active != st.session_state.settings_config.get("shader_background", True):
+            st.session_state.settings_config["shader_background"] = bg_active
+            st.rerun()
+
+        bg_opacity_val = st.slider("Aura Intensity", 0.1, 0.9, float(st.session_state.settings_config.get("bg_opacity", 0.45)), 0.05)
+        st.session_state.settings_config["bg_opacity"] = bg_opacity_val
+
     st.caption("✨ ABDM M1/M2/M3 • HL7 FHIR R4 Validated")
     st.caption("🔒 DPDP Act 2023 Compliant Consent")
 
@@ -1548,7 +1692,19 @@ elif app_mode == "⚙️ Settings & Configuration":
         st.markdown("### 🔊 Voice & Visual Preferences")
         with st.container(border=True):
             v_autospeak = st.toggle("Auto-play voice responses during intake", value=st.session_state.settings_config.get("auto_speak", True))
-            v_shader = st.toggle("Enable Grainient Shader Background", value=st.session_state.settings_config.get("shader_background", True))
+            v_shader = st.toggle("Enable Ambient Shader Background", value=st.session_state.settings_config.get("shader_background", True))
+            
+            bg_styles_list = [
+                "🧬 Bio-Neural Synapse (Interactive)",
+                "🌌 Liquid Aurora Plasma (WebGL2)",
+                "✨ Bioluminescent Stardust (Float Glow)",
+                "🪐 Cyber Grainient Silk (Frosted Iridescent)",
+                "🌿 Frosted Medical Glass (Minimalist)"
+            ]
+            cur_bg_style = st.session_state.settings_config.get("bg_style", "🧬 Bio-Neural Synapse (Interactive)")
+            cur_bg_idx = bg_styles_list.index(cur_bg_style) if cur_bg_style in bg_styles_list else 0
+            v_bg_style = st.selectbox("Aura Background Style", bg_styles_list, index=cur_bg_idx)
+            v_bg_opacity = st.slider("Aura Opacity & Intensity", 0.1, 0.9, float(st.session_state.settings_config.get("bg_opacity", 0.45)), 0.05)
             v_speed = st.slider("Voice Speed (Rate)", 0.7, 1.5, float(st.session_state.settings_config.get("speech_rate", 1.0)), 0.1)
 
     st.markdown("### ⚡ Quick Actions & Reset")
@@ -1580,6 +1736,8 @@ elif app_mode == "⚙️ Settings & Configuration":
             st.session_state.settings_config["default_voice_lang"] = b_lang
             st.session_state.settings_config["auto_speak"] = v_autospeak
             st.session_state.settings_config["shader_background"] = v_shader
+            st.session_state.settings_config["bg_style"] = v_bg_style
+            st.session_state.settings_config["bg_opacity"] = v_bg_opacity
             st.session_state.settings_config["speech_rate"] = v_speed
             st.success("✅ Settings saved successfully!")
             st.rerun()

@@ -4,6 +4,7 @@ import { MonitorSmartphone, ActivitySquare, Stethoscope, ShieldCheck, ExternalLi
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import QRCode from 'react-qr-code';
 import logoPNG from '../assets/logoPNG.png';
+import { Plasma } from '../components/Plasma';
 
 export const DemoSwitcher: React.FC = () => {
   const navigate = useNavigate();
@@ -131,9 +132,23 @@ export const DemoSwitcher: React.FC = () => {
           className="flex-1 relative overflow-y-auto overflow-x-hidden pt-24 sm:pt-28"
           tabIndex={-1}
         >
-          {/* Background gradient orbs */}
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-20 right-1/4 w-72 h-72 bg-teal-200/20 rounded-full blur-3xl pointer-events-none" />
+          {/* Background gradient orbs and Plasma Layer */}
+          <div className="plasma-background fixed inset-0 z-0 pointer-events-none opacity-30">
+            <Plasma
+              color="#0284c7"
+              speed={0.5}
+              direction="forward"
+              scale={1.15}
+              opacity={0.3}
+              mouseInteractive={true}
+              renderScale={0.5}
+              maxDpr={1.5}
+              targetFps={60}
+              iterations={50}
+            />
+          </div>
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-20 right-1/4 w-72 h-72 bg-teal-200/15 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-8 relative z-10">
             {/* Logo + Title */}

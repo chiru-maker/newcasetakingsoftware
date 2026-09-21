@@ -14,7 +14,6 @@ import { toast } from '../components/Toast';
 import { useResendCooldown } from '../hooks/useResendCooldown';
 import { useAudioGuide } from '../hooks/useAudioGuide';
 import type { TranslationKey } from '../utils/audioTranslations';
-import Lightfall from '../components/Lightfall';
 import GradientWaves from '../components/GradientWaves';
 import logoPNG from '../assets/logo.png';
 

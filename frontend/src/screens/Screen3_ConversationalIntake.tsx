@@ -21,6 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../hooks/useTranslation';
 import { ClinicalSummaryBadge } from '../components/ClinicalSummaryBadge';
 import { getMedicalOptionVisual } from '../utils/medicalIcons';
+import { SpeechToText } from '../components/SpeechToText';
 
 interface Props {
   ui: UIInstruction;
@@ -350,7 +351,7 @@ export function Screen3_ConversationalIntake({
           
           {/* Quick text input form */}
           <form onSubmit={handleTextSubmit} className="flex w-full gap-2 relative">
-            <div className="w-full flex items-center bg-white border border-slate-200 rounded-full pl-5 pr-14 py-2.5 shadow-card focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-card-hover transition-[border-color,box-shadow] duration-200">
+            <div className="w-full flex items-center bg-white border border-slate-200 rounded-full pl-5 pr-24 py-2 shadow-card focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:shadow-card-hover transition-[border-color,box-shadow] duration-200">
               <input 
                 type="text" 
                 value={inputText}
@@ -358,6 +359,13 @@ export function Screen3_ConversationalIntake({
                 disabled={isProcessing || isRecording}
                 placeholder={t('interview.type_response')}
                 className="w-full bg-transparent border-none text-sm sm:text-base font-semibold text-slate-800 focus:outline-none disabled:opacity-50 placeholder:text-slate-400"
+              />
+              <SpeechToText
+                buttonOnly
+                value={inputText}
+                onChange={(val) => setInputText(val)}
+                language={ui.language || 'en-IN'}
+                className="shrink-0 mr-1"
               />
             </div>
             <LiquidButton 
